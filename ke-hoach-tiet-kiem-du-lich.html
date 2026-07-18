@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kế hoạch tiết kiệm cho chuyến đi — V5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --xanh-bien: #0284c7;
+    --xanh-bien-nhat: #7dd3fc;
+    --cam-nang: #f97316;
+    --cam-nhat: #fed7aa;
+    --vang-cat: #eab308;
+    --xanh-la: #16a34a;
+    --tim: #7c3aed;
+    --hong: #ec4899;
+    --do: #dc2626;
+    --nen: #fffaf2;
+    --the: #ffffff;
+    --chu-chinh: #16233a;
+    --chu-phu: #5b6b83;
+    --vien: #ece3d3;
+    --bo-goc: 16px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Be Vietnam Pro', -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--nen);
+    color: var(--chu-chinh);
+    padding-bottom: 3rem;
+  }
+  .man-hinh { display: none; }
+  .man-hinh.dang-hien { display: block; }
+
+  /* ---------- Trang chủ ---------- */
+  .hero-trang-chu {
+    background: linear-gradient(120deg, var(--xanh-bien) 0%, var(--tim) 55%, var(--hong) 100%);
+    color: #fff;
+    padding: 3rem 1.5rem 4rem;
+    text-align: center;
+  }
+  .hero-trang-chu h1 { margin: 0 0 8px; font-size: 30px; font-weight: 800; }
+  .hero-trang-chu p { margin: 0 auto; opacity: 0.95; font-size: 14px; max-width: 560px; line-height: 1.6; }
+
+  .khung-form {
+    max-width: 820px; margin: -2.6rem auto 0; padding: 0 1.5rem;
+  }
+  .the-form {
+    background: var(--the); border-radius: 24px; padding: 1.8rem 1.8rem 2rem;
+    box-shadow: 0 16px 40px rgba(60, 20, 90, 0.14);
+  }
+  .buoc-form { margin-bottom: 1.6rem; }
+  .buoc-form label.nhan-lon { display: block; font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .buoc-form .so-buoc {
+    display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+    border-radius: 50%; background: var(--tim); color: #fff; font-size: 11px; font-weight: 800; margin-right: 8px;
+  }
+
+  .nhom-lua-chon { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .the-lua-chon {
+    border: 2px solid var(--vien); background: #fffdf9; border-radius: 16px; padding: 14px 10px;
+    text-align: center; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 13px; color: var(--chu-phu);
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .the-lua-chon:hover { transform: translateY(-2px); }
+  .the-lua-chon .icon-chon { display: block; margin: 0 auto 6px; }
+  .the-lua-chon.dang-chon { border-color: var(--xanh-bien); background: #eff6ff; color: var(--xanh-bien); box-shadow: 0 6px 16px rgba(2,132,199,0.18); }
+  .the-lua-chon.dang-chon.mau-hong { border-color: var(--hong); background: #fdf2f8; color: #be185d; box-shadow: 0 6px 16px rgba(236,72,153,0.18); }
+
+  .buoc-form input[type="number"], .buoc-form input[type="text"] {
+    border: 2px solid var(--vien); border-radius: 14px; padding: 12px 14px; font-size: 16px;
+    font-family: inherit; font-weight: 700; color: var(--chu-chinh); background: #fffdf9; width: 100%;
+  }
+  .buoc-form input[type="number"]:focus, .buoc-form input[type="text"]:focus { outline: none; border-color: var(--xanh-bien); background: #fff; }
+  .goi-y-nho { font-size: 12px; color: var(--chu-phu); margin-top: 5px; display: block; }
+
+  .luoi-ngay-nguoi { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 360px; }
+
+  .nut-len-ke-hoach {
+    background: linear-gradient(120deg, var(--hong), var(--cam-nang)); color: #fff; border: none;
+    padding: 16px 30px; border-radius: 16px; font-family: inherit; font-size: 16px; font-weight: 800;
+    cursor: pointer; box-shadow: 0 12px 26px rgba(236,72,153,0.32); width: 100%;
+  }
+  .nut-len-ke-hoach:hover { filter: brightness(1.05); }
+
+  .ghi-chu-cuoi-trang { max-width: 820px; margin: 1.4rem auto 0; padding: 0 1.5rem; text-align: center; font-size: 12px; color: var(--chu-phu); }
+
+  /* ---------- Màn kết quả ---------- */
+  .thanh-header-man {
+    background: linear-gradient(120deg, var(--xanh-bien) 0%, var(--tim) 55%, var(--hong) 100%);
+    color: #fff; padding: 1.4rem 1.5rem 2.4rem;
+  }
+  .thanh-header-man .inner { max-width: 1080px; margin: 0 auto; }
+  .nut-quay-lai {
+    border: 1px solid rgba(255,255,255,0.55); background: rgba(255,255,255,0.1); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-family: inherit; font-size: 12.5px; font-weight: 600;
+    cursor: pointer; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .nut-quay-lai:hover { background: rgba(255,255,255,0.2); }
+  .thanh-header-man h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; }
+  .thanh-header-man p { margin: 0; font-size: 13px; opacity: 0.95; max-width: 620px; line-height: 1.5; }
+
+  main.noi-dung-man { max-width: 1080px; margin: -1.6rem auto 0; padding: 0 1.5rem; }
+
+  section.card {
+    background: var(--the); border-radius: var(--bo-goc); padding: 1.5rem 1.6rem 1.7rem;
+    box-shadow: 0 8px 22px rgba(20, 40, 70, 0.07); margin-bottom: 1.4rem;
+  }
+  section.card h3.tieu-de-the { margin: 0 0 4px; font-size: 17px; font-weight: 800; }
+  section.card p.mo-ta-the { margin: 0 0 1.1rem; font-size: 12.5px; color: var(--chu-phu); }
+
+  .ket-luan-lon { border-radius: 16px; padding: 1.2rem 1.4rem; font-size: 15px; font-weight: 700; line-height: 1.5; }
+  .ket-luan-lon.tot { background: #ecfdf3; color: #15803d; border: 2px solid #bbf7d0; }
+  .ket-luan-lon.canh-bao { background: #fff7ed; color: #c2410c; border: 2px solid #fed7aa; }
+  .ket-luan-lon .so-lieu-nho { font-size: 12.5px; font-weight: 500; color: var(--chu-phu); margin-top: 6px; }
+
+  .the-ket-qua { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 1.1rem 0; }
+  .the-so { background: #f7f4ec; border-radius: 12px; padding: 0.9rem 1rem; }
+  .the-so .nhan { font-size: 12px; color: var(--chu-phu); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+  .the-so .gia-tri { font-size: 21px; font-weight: 700; margin-top: 3px; }
+
+  .thong-bao { margin-top: 1rem; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5; }
+  .thong-bao.tot { background: #ecfdf3; color: #15803d; border: 1px solid #bbf7d0; }
+  .thong-bao.canh-bao { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+  .thong-bao.thong-tin { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .thong-bao.meo { background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; }
+
+  .nut-toggle-hoc-thuat {
+    border: 2px solid var(--tim); background: #fff; color: var(--tim); padding: 10px 18px; border-radius: 12px;
+    font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; margin-bottom: 1.2rem;
+  }
+  .nut-toggle-hoc-thuat:hover { background: #f5f0ff; }
+  .khu-hoc-thuat {
+    background: #fbfaf6; border: 1px solid var(--vien); border-radius: 14px; padding: 1.1rem 1.2rem; margin-bottom: 1.2rem;
+  }
+  .hop-cong-thuc {
+    background: #f5f0ff; border: 1px solid #e4d9ff; border-radius: 12px; padding: 12px 14px;
+    font-size: 12.5px; color: #4c1d95; line-height: 1.6; margin: 0 0 1.2rem;
+  }
+  .hop-cong-thuc b { font-weight: 700; }
+  .luoi-uu-tien { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 1.2rem; }
+
+  .truong-truot { display: flex; flex-direction: column; gap: 4px; }
+  .truong-truot .nhan-truot { display: flex; justify-content: space-between; font-size: 13px; }
+  .truong-truot .nhan-truot span:first-child { font-weight: 600; color: var(--chu-phu); }
+  .truong-truot .nhan-truot span:last-child { font-weight: 700; }
+  input[type="range"] {
+    -webkit-appearance: none; width: 100%; height: 6px; border-radius: 999px;
+    background: #f0ece0; outline: none; margin: 6px 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--xanh-bien); cursor: pointer; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%; background: var(--xanh-bien); cursor: pointer;
+    border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+
+  .muc-2-luoi { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.4rem; margin-top: 1.2rem; }
+  @media (max-width: 800px) { .muc-2-luoi { grid-template-columns: 1fr; } }
+  .bang-phan-bo { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0.6rem; }
+  .bang-phan-bo th { text-align: left; font-size: 11px; color: var(--chu-phu); text-transform: uppercase; padding: 6px 4px; border-bottom: 1px solid var(--vien); }
+  .bang-phan-bo td { padding: 8px 4px; border-bottom: 1px solid var(--vien); }
+  .bang-phan-bo td.so { text-align: right; font-weight: 600; }
+  .cham-mau { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 7px; }
+  canvas { max-width: 100%; }
+
+  .chip-loc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 1.2rem; }
+  .chip-loc button {
+    border: 1px solid var(--vien); background: #fffdf9; padding: 7px 14px; border-radius: 999px;
+    font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--chu-phu); cursor: pointer;
+  }
+  .chip-loc button.dang-chon { background: var(--xanh-bien); border-color: var(--xanh-bien); color: #fff; }
+
+  .segmented { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .segmented button {
+    border: 1px solid var(--vien); background: #fffdf9; padding: 9px 16px; border-radius: 10px;
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--chu-phu); cursor: pointer;
+  }
+  .segmented button.dang-chon { background: var(--cam-nang); border-color: var(--cam-nang); color: #fff; }
+
+  .luoi-diem-den { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .the-diem-den { border: 1px solid var(--vien); border-radius: 14px; padding: 1rem 1.1rem; background: #fffdf9; display: flex; flex-direction: column; gap: 8px; }
+  .the-diem-den h4 { margin: 0; font-size: 16px; font-weight: 700; }
+  .the-diem-den .mo-ta { font-size: 13px; color: var(--chu-phu); line-height: 1.5; margin: 0; }
+  .the-diem-den .chi-phi { font-size: 13px; font-weight: 700; color: var(--xanh-bien); }
+  .the-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .the-tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+  .khoi-dac-san { background: #fff7ed; border-radius: 10px; padding: 8px 10px; }
+  .khoi-dac-san .nhan-dac-san { font-size: 11px; font-weight: 700; color: #c2410c; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 3px; }
+  .khoi-dac-san .mon-an { font-size: 12.5px; color: var(--chu-chinh); line-height: 1.5; }
+  .khoi-dac-san .meo-an { font-size: 11.5px; color: var(--chu-phu); font-style: italic; margin-top: 4px; }
+  .nut-chon-diem-den {
+    margin-top: 4px; align-self: flex-start; border: 1px solid var(--xanh-bien); background: #fff; color: var(--xanh-bien);
+    padding: 7px 14px; border-radius: 10px; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  }
+  .nut-chon-diem-den.da-chon { background: var(--xanh-bien); color: #fff; }
+  .lien-ket-map {
+    margin-top: 4px; align-self: flex-start; border: 1px solid var(--vien); background: #fff; color: var(--chu-phu);
+    padding: 7px 14px; border-radius: 10px; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    text-decoration: none; display: inline-flex; align-items: center;
+  }
+  .lien-ket-map:hover { border-color: var(--xanh-bien); color: var(--xanh-bien); }
+  .nhom-tieu-de-diem-den {
+    grid-column: 1 / -1; font-size: 12px; font-weight: 700; color: var(--chu-phu); text-transform: uppercase;
+    letter-spacing: 0.03em; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--vien);
+  }
+  .nhom-tieu-de-diem-den:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .the-luu-tru-goi-y { display: flex; gap: 14px; align-items: flex-start; background: #f7f4ec; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .the-luu-tru-goi-y .icon-vong-tron-nho {
+    width: 46px; height: 46px; border-radius: 14px; background: #ede9fe; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .khoi-xuat-bao-cao { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 0.4rem; }
+  .nut-xuat {
+    border: none; border-radius: 12px; padding: 12px 20px; font-family: inherit; font-size: 14px; font-weight: 700;
+    color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  }
+  .nut-xuat.pdf { background: var(--do); }
+  .nut-xuat.excel { background: var(--xanh-la); }
+  .nut-xuat:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ---------- Onboarding tour ---------- */
+  .tour-chan { position: fixed; inset: 0; background: transparent; z-index: 9997; pointer-events: none; }
+  .tour-vong-sang {
+    position: fixed; z-index: 9998; pointer-events: none; border-radius: 22px;
+    box-shadow: 0 0 0 9999px rgba(22, 16, 10, 0.55), 0 0 0 4px #fff, 0 0 24px 4px rgba(250, 204, 21, 0.9);
+    transition: top 0.35s ease, left 0.35s ease, width 0.35s ease, height 0.35s ease, opacity 0.2s ease;
+  }
+  .tour-diem-nong {
+    position: fixed; z-index: 9999; background: transparent; border: none; border-radius: 22px; cursor: pointer;
+    transition: top 0.35s ease, left 0.35s ease, width 0.35s ease, height 0.35s ease;
+  }
+  .tour-mui-ten {
+    position: fixed; z-index: 9999; font-size: 30px; color: #facc15; pointer-events: none;
+    animation: nhun-mui-ten 1s ease-in-out infinite; text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    transition: top 0.35s ease, left 0.35s ease;
+  }
+  @keyframes nhun-mui-ten { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  .tour-hop-meo { position: fixed; z-index: 10001; display: none; align-items: flex-end; gap: 10px; max-width: 320px; }
+  .tour-meo { width: 84px; height: 84px; flex-shrink: 0; animation: meo-nhun 2.2s ease-in-out infinite; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15)); }
+  @keyframes meo-nhun { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-7px) rotate(1deg); } }
+
+  .tour-bong-bong {
+    background: #fff; border-radius: 18px; padding: 14px 16px; box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    position: relative; border: 1px solid var(--vien); max-width: 250px;
+  }
+  .tour-bong-bong::after {
+    content: ''; position: absolute; left: -9px; bottom: 20px; width: 0; height: 0;
+    border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 10px solid #fff;
+  }
+  .tour-bong-bong p { margin: 0 0 10px; font-size: 13.5px; line-height: 1.55; color: var(--chu-chinh); font-weight: 500; }
+  .tour-nut-hang { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+  .tour-nut-hang button { font-family: inherit; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 7px 14px; cursor: pointer; border: none; }
+  .tour-bo-qua { background: transparent; color: var(--chu-phu); }
+  .tour-tiep { background: var(--xanh-bien); color: #fff; }
+  .tour-da-hieu { background: var(--xanh-la); color: #fff; }
+
+  /* ---------- Mèo thu nhỏ (sticky widget) ---------- */
+  .meo-thu-nho {
+    position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%;
+    background: #fff7ec; border: 2px solid var(--vang-cat); box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    z-index: 10005; cursor: pointer; padding: 7px; display: none; align-items: center; justify-content: center;
+    animation: meo-nhun 3.4s ease-in-out infinite;
+  }
+  .meo-thu-nho svg { width: 100%; height: 100%; }
+  .menu-meo-thu-nho {
+    position: fixed; bottom: 88px; right: 20px; z-index: 10005; background: #fff; border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18); padding: 8px; display: none; flex-direction: column; gap: 4px;
+    min-width: 230px; border: 1px solid var(--vien);
+  }
+  .menu-meo-thu-nho button {
+    border: none; background: transparent; text-align: left; padding: 9px 10px; border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--chu-chinh); cursor: pointer;
+  }
+  .menu-meo-thu-nho button:hover { background: #f7f4ec; }
+
+  /* ---------- Nhật ký thực tế ---------- */
+  .nut-mo-nhat-ky {
+    border: none; background: linear-gradient(120deg, var(--tim), var(--hong)); color: #fff;
+    padding: 12px 20px; border-radius: 14px; font-family: inherit; font-size: 14px; font-weight: 800;
+    cursor: pointer; margin-bottom: 1.2rem; box-shadow: 0 10px 22px rgba(124,58,237,0.28);
+  }
+  .khoi-nhap-chi-tieu { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 1.2rem; }
+  .khoi-nhap-chi-tieu .truong-nho { flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: 5px; }
+  .khoi-nhap-chi-tieu .truong-nho label { font-size: 12px; font-weight: 600; color: var(--chu-phu); }
+  .khoi-nhap-chi-tieu input {
+    border: 2px solid var(--vien); border-radius: 12px; padding: 10px 12px; font-size: 14px;
+    font-family: inherit; font-weight: 600; color: var(--chu-chinh); background: #fffdf9;
+  }
+  .khoi-nhap-chi-tieu input:focus { outline: none; border-color: var(--xanh-bien); background: #fff; }
+  .nut-them-chi-tieu {
+    border: none; background: var(--xanh-bien); color: #fff; padding: 11px 18px; border-radius: 12px;
+    font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+  }
+  .bang-nhat-ky { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1rem; }
+  .bang-nhat-ky th { text-align: left; font-size: 11px; color: var(--chu-phu); text-transform: uppercase; padding: 6px 4px; border-bottom: 1px solid var(--vien); }
+  .bang-nhat-ky td { padding: 8px 4px; border-bottom: 1px solid var(--vien); }
+  .bang-nhat-ky td.so { text-align: right; font-weight: 600; }
+  .nut-xoa-khoan-chi { border: none; background: transparent; color: var(--do); font-size: 16px; font-weight: 700; cursor: pointer; padding: 0 6px; }
+  .the-ngay-hien-tai { background: #f5f0ff; border: 1px solid #e4d9ff; border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+  .the-ngay-hien-tai .so-ngay-lon { font-size: 26px; font-weight: 800; color: var(--tim); }
+  .bong-bong-canh-bao-tieu {
+    display: none; gap: 12px; align-items: flex-start; background: #fef2f2; border: 2px solid #fecaca;
+    border-radius: 14px; padding: 12px 14px; margin-bottom: 1.2rem;
+  }
+  .bong-bong-canh-bao-tieu svg { width: 44px; height: 44px; flex-shrink: 0; }
+  .bong-bong-canh-bao-tieu p { margin: 0; font-size: 13.5px; font-weight: 700; color: #b91c1c; line-height: 1.5; }
+
+  /* ---------- Mẹo bản địa ---------- */
+  .the-meo-ban-dia { border-left: 4px solid var(--vang-cat); background: #fffbeb; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px; }
+  .the-meo-ban-dia .nguon-meo { font-size: 11px; font-weight: 700; color: #92400e; text-transform: uppercase; letter-spacing: 0.02em; }
+  .the-meo-ban-dia p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--chu-chinh); }
+  .ghi-chu-mau { font-size: 11.5px; color: var(--chu-phu); font-style: italic; margin-top: 4px; }
+
+  /* ---------- Popup huy hiệu ---------- */
+  .huy-hieu-nen { position: fixed; inset: 0; background: rgba(22,16,10,0.6); z-index: 10020; display: none; align-items: center; justify-content: center; padding: 1rem; overflow: hidden; }
+  .huy-hieu-the {
+    background: #fff; border-radius: 22px; padding: 2rem 1.8rem; max-width: 380px; width: 100%; text-align: center;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.35); position: relative; z-index: 2;
+  }
+  .huy-hieu-vong-tron {
+    width: 96px; height: 96px; border-radius: 50%; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #facc15, #f97316); box-shadow: 0 10px 24px rgba(249,115,22,0.4);
+  }
+  .huy-hieu-vong-tron svg { width: 66px; height: 66px; }
+  .huy-hieu-the h3 { margin: 0 0 6px; font-size: 19px; font-weight: 800; }
+  .huy-hieu-the .ten-huy-hieu { display: inline-block; background: #fef3c7; color: #92400e; font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 999px; margin: 6px 0 12px; }
+  .huy-hieu-the p.mo-ta-huy-hieu { font-size: 13.5px; color: var(--chu-phu); line-height: 1.6; margin: 0 0 14px; }
+  .huy-hieu-so-lieu { display: flex; gap: 10px; margin-bottom: 16px; }
+  .huy-hieu-so-lieu .o { flex: 1; background: #f7f4ec; border-radius: 10px; padding: 8px; }
+  .huy-hieu-so-lieu .o .nhan { font-size: 10.5px; color: var(--chu-phu); text-transform: uppercase; }
+  .huy-hieu-so-lieu .o .gt { font-size: 14px; font-weight: 800; }
+  .huy-hieu-nut-hang { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .huy-hieu-nut-hang button {
+    border: none; border-radius: 12px; padding: 10px 16px; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  }
+  .nut-luu-anh-huy-hieu { background: var(--xanh-la); color: #fff; }
+  .nut-chia-se-huy-hieu { background: var(--xanh-bien); color: #fff; }
+  .nut-dong-huy-hieu { background: #f0ece0; color: var(--chu-phu); }
+  .manh-confetti { position: absolute; top: -10px; width: 8px; height: 14px; opacity: 0.9; animation: roi-confetti linear infinite; }
+  @keyframes roi-confetti { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(520px) rotate(540deg); } }
+</style>
+</head>
+<body>
+
+<!-- ============ TRANG CHỦ: FORM 5 YẾU TỐ ============ -->
+<div class="man-hinh dang-hien" id="manTrangChu">
+  <div class="hero-trang-chu">
+    <h1>Lên kế hoạch chuyến đi trong 30 giây</h1>
+    <p>Trả lời 5 câu hỏi nhanh, trẫm sẽ lo phần còn lại: đủ tiền chưa, đi mùa nào cho khôn, ăn gì ngon, ở đâu hợp túi tiền.</p>
+  </div>
+
+  <div class="khung-form">
+    <div class="the-form">
+      <div class="buoc-form" id="khoiViTien">
+        <label class="nhan-lon" for="viTien"><span class="so-buoc">1</span>Tổng số tiền đang có (ví tiền của sen)</label>
+        <input type="text" inputmode="numeric" id="viTien" value="15.000.000" min="0">
+        <span class="goi-y-nho" id="viTienGoiY"></span>
+      </div>
+
+      <div class="buoc-form" id="khoiMua">
+        <label class="nhan-lon"><span class="so-buoc">2</span>Mùa dự kiến đi</label>
+        <div class="nhom-lua-chon" id="chonMua">
+          <button class="the-lua-chon" data-mua="xuan" type="button">Xuân</button>
+          <button class="the-lua-chon" data-mua="ha" type="button">Hạ</button>
+          <button class="the-lua-chon" data-mua="thu" type="button">Thu</button>
+          <button class="the-lua-chon" data-mua="dong" type="button">Đông</button>
+        </div>
+      </div>
+
+      <div class="buoc-form" id="khoiPhuongTien">
+        <label class="nhan-lon"><span class="so-buoc">3</span>Cách di chuyển</label>
+        <div class="nhom-lua-chon" id="chonPhuongTien">
+          <button class="the-lua-chon" data-phuong-tien="may_bay" type="button">Máy bay</button>
+          <button class="the-lua-chon" data-phuong-tien="xe_khach" type="button">Xe khách giường nằm</button>
+          <button class="the-lua-chon" data-phuong-tien="xe_may" type="button">Xe máy phượt</button>
+        </div>
+      </div>
+
+      <div class="buoc-form" id="khoiSoThich">
+        <label class="nhan-lon"><span class="so-buoc">4</span>Sở thích cá nhân (chọn thoải mái, được nhiều lựa chọn)</label>
+        <div class="chip-loc" id="chonSoThich" style="margin:0;">
+          <button data-so-thich="Biển" type="button">Biển</button>
+          <button data-so-thich="Núi" type="button">Núi</button>
+          <button data-so-thich="Ẩm thực" type="button">Ẩm thực</button>
+          <button data-so-thich="Nghỉ dưỡng" type="button">Nghỉ dưỡng</button>
+        </div>
+      </div>
+
+      <div class="buoc-form" id="khoiLuuTru">
+        <label class="nhan-lon"><span class="so-buoc">5</span>Kiểu lưu trú</label>
+        <div class="nhom-lua-chon" id="chonLuuTru">
+          <button class="the-lua-chon" data-luu-tru="homestay" type="button">Homestay</button>
+          <button class="the-lua-chon" data-luu-tru="khach_san_3_sao" type="button">Khách sạn 3 sao</button>
+          <button class="the-lua-chon" data-luu-tru="resort_cao_cap" type="button">Resort cao cấp</button>
+        </div>
+      </div>
+
+      <div class="buoc-form" id="khoiNgayNguoi" style="margin-bottom: 1.8rem;">
+        <label class="nhan-lon" style="font-size:12.5px; color:var(--chu-phu);">Vài thông tin nhỏ nữa thôi</label>
+        <div class="luoi-ngay-nguoi">
+          <div>
+            <input type="number" id="soNgay" value="4" min="1" step="1">
+            <span class="goi-y-nho">Số ngày đi</span>
+          </div>
+          <div>
+            <input type="number" id="soNguoi" value="2" min="1" step="1">
+            <span class="goi-y-nho">Số người đi cùng</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="nut-len-ke-hoach" id="nutLenKeHoach" type="button">Lên kế hoạch ngay →</button>
+    </div>
+  </div>
+
+  <p class="ghi-chu-cuoi-trang">Dữ liệu chỉ lưu tạm trong phiên làm việc này trên trình duyệt của bạn.</p>
+</div>
+
+<!-- ============ MÀN KẾT QUẢ ============ -->
+<div class="man-hinh" id="manKetQua">
+  <div class="thanh-header-man">
+    <div class="inner">
+      <button class="nut-quay-lai" data-ve-trang-chu type="button">← Chỉnh lại bộ lọc</button>
+      <h2>Kế hoạch chuyến đi của sen</h2>
+      <p>Toàn bộ tính toán dựa trên 5 lựa chọn bạn vừa chọn. Bấm nút bên dưới nếu muốn xem cách trẫm tính ra các con số này.</p>
+    </div>
+  </div>
+  <main class="noi-dung-man">
+
+    <button class="nut-toggle-hoc-thuat" id="nutXemPhanTich" type="button">🔍 Xem cơ sở phân tích khoa học của Trẫm</button>
+
+    <div class="khu-hoc-thuat" id="khuHocThuat" style="display:none;">
+      <div class="hop-cong-thuc">
+        <b>Hàm thỏa dụng Cobb-Douglas (3 nhóm chi tiêu linh hoạt):</b> U = Lưu_trú<sup>a1</sup> × Ăn_uống<sup>a2</sup> × Vui_chơi<sup>a3</sup>, tối đa hóa với phần ngân sách còn lại sau khi trừ chi phí di chuyển bắt buộc theo mùa. Nghiệm tối ưu: mỗi khoản chi = (ưu tiên chuẩn hóa) × ngân sách linh hoạt.
+        <div style="margin-top:6px;">Chỉ số thỏa dụng hiện tại: <b id="chiSoThoaDung">—</b></div>
+      </div>
+
+      <div class="luoi-uu-tien">
+        <div class="truong-truot">
+          <div class="nhan-truot"><span><span class="cham-mau" style="background:#0284c7"></span>Lưu trú</span><span id="uuTienLuuTruNhan">35%</span></div>
+          <input type="range" id="uuTienLuuTru" min="5" max="80" value="35">
+        </div>
+        <div class="truong-truot">
+          <div class="nhan-truot"><span><span class="cham-mau" style="background:#16a34a"></span>Ăn uống</span><span id="uuTienAnUongNhan">35%</span></div>
+          <input type="range" id="uuTienAnUong" min="5" max="80" value="35">
+        </div>
+        <div class="truong-truot">
+          <div class="nhan-truot"><span><span class="cham-mau" style="background:#7c3aed"></span>Vui chơi / Mua sắm</span><span id="uuTienVuiChoiNhan">30%</span></div>
+          <input type="range" id="uuTienVuiChoi" min="5" max="80" value="30">
+        </div>
+      </div>
+      <p style="font-size:11.5px; color:var(--chu-phu); margin: -0.6rem 0 1rem;">Chọn sở thích "Ẩm thực" hoặc "Nghỉ dưỡng" ở bước 4 sẽ tự cộng thêm điểm ưu tiên cho nhóm tương ứng.</p>
+
+      <div style="position:relative; height:250px; margin-bottom: 0.8rem;">
+        <canvas id="bieuDoBangQuan" role="img" aria-label="Đồ thị đường bàng quan Cobb-Douglas, đường ngân sách linh hoạt và điểm tối ưu MRS">Đường bàng quan giữa nhóm lưu trú cộng ăn uống và nhóm vui chơi, cùng điểm tối ưu.</canvas>
+      </div>
+      <div class="thong-bao thong-tin" id="mrsToiUu"></div>
+    </div>
+
+    <section class="card" id="theDuTien">
+      <h3 class="tieu-de-the">Đủ tiền không?</h3>
+      <p class="mo-ta-the">So sánh ví tiền của sen với chi phí ước tính cho lựa chọn vừa chọn.</p>
+      <div class="ket-luan-lon" id="ketLuanDuTien">—</div>
+    </section>
+
+    <section class="card" id="theMua">
+      <h3 class="tieu-de-the">Mùa này nên biết gì?</h3>
+      <p class="mo-ta-the">Mẹo thực tế theo mùa bạn chọn để né kẹt vé, né cháy phòng.</p>
+      <div class="thong-bao thong-tin" id="canhBaoMua"></div>
+      <div class="thong-bao meo" id="meoDatVe" style="margin-top:10px;"></div>
+      <div class="thong-bao canh-bao" id="canhBaoMuaVu" style="display:none; margin-top:10px;"></div>
+    </section>
+
+    <section class="card" id="theNganSach">
+      <h3 class="tieu-de-the">Ngân sách chi tiêu dự kiến</h3>
+      <p class="mo-ta-the">Chi phí di chuyển tính theo mùa trước, phần còn lại chia tối ưu cho lưu trú / ăn uống / vui chơi.</p>
+      <div class="the-ket-qua">
+        <div class="the-so"><div class="nhan">Di chuyển (cố định theo mùa)</div><div class="gia-tri" id="diChuyenHienThi">—</div></div>
+        <div class="the-so"><div class="nhan">Ngân sách linh hoạt còn lại</div><div class="gia-tri" id="nganSachLinhHoatHienThi">—</div></div>
+      </div>
+      <div class="muc-2-luoi">
+        <table class="bang-phan-bo">
+          <thead><tr><th>Khoản chi</th><th style="text-align:right">Tỷ lệ</th><th style="text-align:right">Số tiền</th></tr></thead>
+          <tbody id="bangPhanBoBody"></tbody>
+        </table>
+        <div style="position:relative; height:220px;">
+          <canvas id="bieuDoPhanBo" role="img" aria-label="Biểu đồ tròn phân bổ ngân sách chuyến đi theo khoản chi">Phân bổ ngân sách theo di chuyển, lưu trú, ăn uống, vui chơi mua sắm.</canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="khoiGoiYDiaDiem">
+      <h3 class="tieu-de-the">Gợi ý địa điểm &amp; đặc sản phải ăn</h3>
+      <p class="mo-ta-the">Lọc theo ngân sách mỗi người và sở thích. Có thể chọn điểm đến trước để trẫm tính lại ngân sách giúp.</p>
+
+      <div class="segmented" id="cheDoDiaDiemChon">
+        <button data-che-do="ngan_sach" class="dang-chon" type="button">Gợi ý theo ngân sách</button>
+        <button data-che-do="chon_truoc" type="button">Chọn điểm đến trước</button>
+      </div>
+
+      <div class="thong-bao tot" id="thongBaoChonTruoc" style="display:none;"></div>
+      <div class="thong-bao meo" id="bannerAmThuc" style="display:none;"></div>
+
+      <div id="khoiNganSachDiaDiem" class="truong-truot" style="max-width: 480px; margin-bottom: 0.6rem;">
+        <div class="nhan-truot"><span>Ngân sách mỗi người dùng để gợi ý</span><span id="nganSachDiaDiemNhan">—</span></div>
+        <input type="range" id="nganSachDiaDiem" min="500000" max="35000000" step="100000" value="2000000">
+      </div>
+
+      <div class="thong-bao thong-tin" id="nhomNganSachHienThi" style="margin-bottom: 1rem;"></div>
+
+      <div class="luoi-diem-den" id="luoiDiemDen"></div>
+    </section>
+
+    <section class="card" id="theLuuTru">
+      <h3 class="tieu-de-the">Gợi ý lưu trú</h3>
+      <p class="mo-ta-the">Theo đúng kiểu lưu trú bạn đã chọn ở bước 5.</p>
+      <div class="the-luu-tru-goi-y">
+        <span class="icon-vong-tron-nho">
+          <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+            <path d="M8 22 L24 8 L40 22 V40 H8 Z" fill="#7c3aed"/>
+            <rect x="19" y="28" width="10" height="12" fill="#fff"/>
+          </svg>
+        </span>
+        <div>
+          <div style="font-weight:800; font-size:15px;" id="tenLuuTruGoiY">—</div>
+          <div style="font-size:13px; color:var(--chu-phu); margin:4px 0;" id="giaLuuTruGoiY"></div>
+          <div style="font-size:13px; line-height:1.6;" id="meoLuuTruGoiY"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="theMeoBanDia">
+      <h3 class="tieu-de-the">Trẫm cứu với — Mẹo bản địa</h3>
+      <p class="mo-ta-the">Mẹo thực tế theo từng điểm đến, do Trẫm tổng hợp sẵn cho sen tham khảo.</p>
+      <div id="danhSachMeoBanDia"></div>
+      <p class="ghi-chu-mau">Mẹo minh họa do Trẫm biên soạn để tham khảo — không phải dữ liệu thời gian thực từ cộng đồng.</p>
+    </section>
+
+    <section class="card">
+      <h3 class="tieu-de-the">Đang đi chuyến này rồi?</h3>
+      <p class="mo-ta-the">Ghi lại chi tiêu thực tế mỗi ngày, trẫm sẽ tính lại ngân sách còn lại giúp sen ngay lập tức.</p>
+      <button class="nut-mo-nhat-ky" id="nutMoNhatKy" type="button">📔 Mở nhật ký chuyến đi →</button>
+    </section>
+
+    <section class="card">
+      <h3 class="tieu-de-the">Xuất báo cáo tóm tắt chuyến đi</h3>
+      <p class="mo-ta-the">Tổng hợp toàn bộ kế hoạch thành báo cáo đẹp để chia sẻ.</p>
+      <div class="khoi-xuat-bao-cao">
+        <button class="nut-xuat pdf" id="nutXuatPDF" type="button">Tải báo cáo PDF</button>
+        <button class="nut-xuat excel" id="nutXuatExcel" type="button">Tải báo cáo Excel</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MÀN NHẬT KÝ THỰC TẾ ============ -->
+<div class="man-hinh" id="manNhatKy">
+  <div class="thanh-header-man">
+    <div class="inner">
+      <button class="nut-quay-lai" data-ve-ket-qua type="button">← Quay lại kết quả</button>
+      <h2>Nhật ký chi tiêu thực tế</h2>
+      <p>Ghi lại từng khoản đã tiêu trong chuyến đi, trẫm sẽ tính lại ngân sách cho những ngày còn lại ngay lập tức.</p>
+    </div>
+  </div>
+  <main class="noi-dung-man">
+
+    <section class="card">
+      <h3 class="tieu-de-the">Chuyến đi bắt đầu từ ngày nào?</h3>
+      <p class="mo-ta-the">Trẫm dùng ngày này để tính sen đang ở ngày thứ mấy trong chuyến đi.</p>
+      <div class="buoc-form" style="max-width: 280px; margin-bottom: 0;">
+        <input type="date" id="ngayBatDauChuyenDi">
+      </div>
+      <div class="the-ngay-hien-tai" id="theNgayHienTai">
+        <div class="so-ngay-lon" id="ngayThuMayChu">—</div>
+        <div id="ngayThuMayMoTa" style="font-size:13px; color:var(--chu-phu);"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 class="tieu-de-the">Thêm khoản chi</h3>
+      <p class="mo-ta-the">Ví dụ: "Ăn hải sản" — 1.000.000 đ.</p>
+
+      <div class="bong-bong-canh-bao-tieu" id="bongBongTieuLo">
+        <svg viewBox="0 0 110 100" fill="none">
+          <ellipse cx="55" cy="76" rx="33" ry="21" fill="#fff7ec"/>
+          <ellipse cx="29" cy="18" rx="9" ry="21" transform="rotate(-26 29 18)" fill="#f97316"/>
+          <ellipse cx="81" cy="18" rx="9" ry="21" transform="rotate(26 81 18)" fill="#f97316"/>
+          <ellipse cx="30" cy="21" rx="4.5" ry="13" transform="rotate(-26 30 21)" fill="#ffedd5"/>
+          <ellipse cx="80" cy="21" rx="4.5" ry="13" transform="rotate(26 80 21)" fill="#ffedd5"/>
+          <circle cx="55" cy="53" r="32" fill="#fff7ec"/>
+          <rect x="44" y="11" width="22" height="5" rx="2.5" fill="#eab308"/>
+          <circle cx="47" cy="10" r="4" fill="#facc15"/>
+          <circle cx="55" cy="7" r="4.5" fill="#facc15"/>
+          <circle cx="63" cy="10" r="4" fill="#facc15"/>
+          <ellipse cx="33" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+          <ellipse cx="77" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+          <circle cx="45.5" cy="51" r="6.4" fill="#16233a"/>
+          <circle cx="64.5" cy="51" r="6.4" fill="#16233a"/>
+          <circle cx="43.3" cy="48.2" r="2.1" fill="#fff"/>
+          <circle cx="62.3" cy="48.2" r="2.1" fill="#fff"/>
+          <path d="M55 59 Q52 62.5 55 65 Q58 62.5 55 59 Z" fill="#fb7185"/>
+          <path d="M50 68 Q55 64 60 68" stroke="#16233a" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <p id="vanBanTieuLo"></p>
+      </div>
+
+      <div class="khoi-nhap-chi-tieu">
+        <div class="truong-nho">
+          <label for="moTaChiTieu">Nội dung</label>
+          <input type="text" id="moTaChiTieu" placeholder="Ăn hải sản">
+        </div>
+        <div class="truong-nho" style="max-width: 180px;">
+          <label for="soTienChiTieu">Số tiền (đ)</label>
+          <input type="text" inputmode="numeric" id="soTienChiTieu" placeholder="1.000.000">
+        </div>
+        <button class="nut-them-chi-tieu" id="nutThemChiTieu" type="button">+ Thêm</button>
+      </div>
+
+      <table class="bang-nhat-ky">
+        <thead><tr><th>Ngày</th><th>Nội dung</th><th style="text-align:right">Số tiền</th><th></th></tr></thead>
+        <tbody id="bangNhatKyBody"></tbody>
+      </table>
+      <p id="chuaCoKhoanChi" style="font-size:13px; color:var(--chu-phu);">Chưa có khoản chi nào được ghi lại.</p>
+    </section>
+
+    <section class="card">
+      <h3 class="tieu-de-the">Ngân sách còn lại</h3>
+      <p class="mo-ta-the">Tính lại theo đúng hàm Cobb-Douglas cho những ngày còn lại của chuyến đi.</p>
+      <div class="the-ket-qua">
+        <div class="the-so"><div class="nhan">Đã chi thực tế</div><div class="gia-tri" id="daChiThucTeHienThi">—</div></div>
+        <div class="the-so"><div class="nhan">Còn lại (linh hoạt)</div><div class="gia-tri" id="conLaiLinhHoatHienThi">—</div></div>
+        <div class="the-so"><div class="nhan">Trung bình / ngày còn lại</div><div class="gia-tri" id="trungBinhNgayConLaiHienThi">—</div></div>
+      </div>
+      <table class="bang-phan-bo">
+        <thead><tr><th>Khoản chi (phân bổ lại)</th><th style="text-align:right">Tỷ lệ</th><th style="text-align:right">Số tiền</th></tr></thead>
+        <tbody id="bangPhanBoLaiBody"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ Onboarding tour: mascot mèo mập ============ -->
+<div class="tour-chan" id="tourChan" style="display:none;"></div>
+<div class="tour-vong-sang" id="tourVongSang" style="display:none;"></div>
+<button class="tour-diem-nong" id="tourDiemNong" style="display:none;" type="button" aria-label="Bấm để đi tiếp"></button>
+<div class="tour-mui-ten" id="tourMuiTen" style="display:none;">↓</div>
+<div class="tour-hop-meo" id="tourHopMeo">
+  <svg class="tour-meo" viewBox="0 0 110 100" fill="none">
+    <ellipse cx="55" cy="76" rx="33" ry="21" fill="#fff7ec"/>
+    <circle cx="39" cy="93" r="7.5" fill="#fff7ec"/>
+    <circle cx="71" cy="93" r="7.5" fill="#fff7ec"/>
+    <ellipse cx="29" cy="18" rx="9" ry="21" transform="rotate(-26 29 18)" fill="#f97316"/>
+    <ellipse cx="81" cy="18" rx="9" ry="21" transform="rotate(26 81 18)" fill="#f97316"/>
+    <ellipse cx="30" cy="21" rx="4.5" ry="13" transform="rotate(-26 30 21)" fill="#ffedd5"/>
+    <ellipse cx="80" cy="21" rx="4.5" ry="13" transform="rotate(26 80 21)" fill="#ffedd5"/>
+    <circle cx="55" cy="53" r="32" fill="#fff7ec"/>
+    <rect x="44" y="11" width="22" height="5" rx="2.5" fill="#eab308"/>
+    <circle cx="47" cy="10" r="4" fill="#facc15"/>
+    <circle cx="55" cy="7" r="4.5" fill="#facc15"/>
+    <circle cx="63" cy="10" r="4" fill="#facc15"/>
+    <circle cx="47" cy="9" r="1.3" fill="#fde68a"/>
+    <circle cx="55" cy="6" r="1.4" fill="#fde68a"/>
+    <circle cx="63" cy="9" r="1.3" fill="#fde68a"/>
+    <path d="M18 49 Q30 46 38 50" stroke="#c9b8a3" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+    <path d="M18 57 Q30 59 38 56" stroke="#c9b8a3" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+    <path d="M92 49 Q80 46 72 50" stroke="#c9b8a3" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+    <path d="M92 57 Q80 59 72 56" stroke="#c9b8a3" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+    <ellipse cx="33" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+    <ellipse cx="77" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+    <circle cx="45.5" cy="51" r="6.4" fill="#16233a"/>
+    <circle cx="64.5" cy="51" r="6.4" fill="#16233a"/>
+    <circle cx="43.3" cy="48.2" r="2.1" fill="#fff"/>
+    <circle cx="48" cy="53.6" r="1.1" fill="#fff"/>
+    <circle cx="62.3" cy="48.2" r="2.1" fill="#fff"/>
+    <circle cx="67" cy="53.6" r="1.1" fill="#fff"/>
+    <path d="M55 59 Q52 62.5 55 65 Q58 62.5 55 59 Z" fill="#fb7185"/>
+    <path d="M55 65 Q55 69 49 69" stroke="#16233a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M55 65 Q55 69 61 69" stroke="#16233a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="tour-bong-bong">
+    <p id="tourVanBan"></p>
+    <div class="tour-nut-hang">
+      <button class="tour-bo-qua" id="tourNutBoQua" type="button">Bỏ qua</button>
+      <button class="tour-tiep" id="tourNutTiep" type="button">Tiếp theo →</button>
+      <button class="tour-da-hieu" id="tourNutDaHieu" type="button" style="display:none;">Đã hiểu, cảm ơn trẫm!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Mèo thu nhỏ (sticky widget sau khi hết tour) ============ -->
+<button class="meo-thu-nho" id="ngheThuong" type="button" aria-label="Mở trợ lý mèo" style="display:none;">
+  <svg viewBox="0 0 110 100" fill="none">
+    <ellipse cx="55" cy="76" rx="33" ry="21" fill="#fff7ec"/>
+    <ellipse cx="29" cy="18" rx="9" ry="21" transform="rotate(-26 29 18)" fill="#f97316"/>
+    <ellipse cx="81" cy="18" rx="9" ry="21" transform="rotate(26 81 18)" fill="#f97316"/>
+    <ellipse cx="30" cy="21" rx="4.5" ry="13" transform="rotate(-26 30 21)" fill="#ffedd5"/>
+    <ellipse cx="80" cy="21" rx="4.5" ry="13" transform="rotate(26 80 21)" fill="#ffedd5"/>
+    <circle cx="55" cy="53" r="32" fill="#fff7ec"/>
+    <rect x="44" y="11" width="22" height="5" rx="2.5" fill="#eab308"/>
+    <circle cx="47" cy="10" r="4" fill="#facc15"/>
+    <circle cx="55" cy="7" r="4.5" fill="#facc15"/>
+    <circle cx="63" cy="10" r="4" fill="#facc15"/>
+    <ellipse cx="33" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+    <ellipse cx="77" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+    <circle cx="45.5" cy="51" r="6.4" fill="#16233a"/>
+    <circle cx="64.5" cy="51" r="6.4" fill="#16233a"/>
+    <circle cx="43.3" cy="48.2" r="2.1" fill="#fff"/>
+    <circle cx="62.3" cy="48.2" r="2.1" fill="#fff"/>
+    <path d="M55 59 Q52 62.5 55 65 Q58 62.5 55 59 Z" fill="#fb7185"/>
+  </svg>
+</button>
+<div class="menu-meo-thu-nho" id="menuNgheThuong">
+  <button id="nutXemLaiTuDau" type="button">Xem lại hướng dẫn từ đầu</button>
+  <button id="nutNhacBaiTaiCho" type="button">Nhờ trẫm nhắc bài tại chỗ</button>
+</div>
+
+<!-- ============ Popup Huy hiệu Hoàng Thượng Ban ============ -->
+<div class="huy-hieu-nen" id="huyHieuNen">
+  <div id="khoiConfetti"></div>
+  <div class="huy-hieu-the" id="huyHieuThe">
+    <div class="huy-hieu-vong-tron">
+      <svg viewBox="0 0 110 100" fill="none">
+        <ellipse cx="29" cy="18" rx="9" ry="21" transform="rotate(-26 29 18)" fill="#f97316"/>
+        <ellipse cx="81" cy="18" rx="9" ry="21" transform="rotate(26 81 18)" fill="#f97316"/>
+        <ellipse cx="30" cy="21" rx="4.5" ry="13" transform="rotate(-26 30 21)" fill="#ffedd5"/>
+        <ellipse cx="80" cy="21" rx="4.5" ry="13" transform="rotate(26 80 21)" fill="#ffedd5"/>
+        <circle cx="55" cy="53" r="32" fill="#fff7ec"/>
+        <rect x="44" y="11" width="22" height="5" rx="2.5" fill="#eab308"/>
+        <circle cx="47" cy="10" r="4" fill="#facc15"/>
+        <circle cx="55" cy="7" r="4.5" fill="#facc15"/>
+        <circle cx="63" cy="10" r="4" fill="#facc15"/>
+        <ellipse cx="33" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+        <ellipse cx="77" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+        <circle cx="45.5" cy="51" r="6.4" fill="#16233a"/>
+        <circle cx="64.5" cy="51" r="6.4" fill="#16233a"/>
+        <circle cx="43.3" cy="48.2" r="2.1" fill="#fff"/>
+        <circle cx="62.3" cy="48.2" r="2.1" fill="#fff"/>
+        <path d="M55 59 Q52 62.5 55 65 Q58 62.5 55 59 Z" fill="#fb7185"/>
+        <path d="M55 65 Q55 69 49 69" stroke="#16233a" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M55 65 Q55 69 61 69" stroke="#16233a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h3 id="huyHieuTieuDe">—</h3>
+    <div class="ten-huy-hieu" id="huyHieuTen">—</div>
+    <p class="mo-ta-huy-hieu" id="huyHieuMoTa">—</p>
+    <div class="huy-hieu-so-lieu">
+      <div class="o"><div class="nhan">Ngân sách</div><div class="gt" id="huyHieuNganSach">—</div></div>
+      <div class="o"><div class="nhan">Đã chi</div><div class="gt" id="huyHieuDaChi">—</div></div>
+    </div>
+    <div class="huy-hieu-nut-hang">
+      <button class="nut-luu-anh-huy-hieu" id="nutLuuAnhHuyHieu" type="button">Lưu ảnh huy hiệu</button>
+      <button class="nut-chia-se-huy-hieu" id="nutChiaSeHuyHieu" type="button">Chia sẻ</button>
+      <button class="nut-dong-huy-hieu" id="nutDongHuyHieu" type="button">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+(function () {
+
+  /* =========================================================
+     ĐIỀU HƯỚNG
+     ========================================================= */
+  function moToManHinh(id) {
+    document.querySelectorAll('.man-hinh').forEach(function (el) { el.classList.remove('dang-hien'); });
+    document.getElementById(id).classList.add('dang-hien');
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('[data-ve-trang-chu]').forEach(function (btn) {
+    btn.addEventListener('click', function () { moToManHinh('manTrangChu'); });
+  });
+  document.querySelectorAll('[data-ve-ket-qua]').forEach(function (btn) {
+    btn.addEventListener('click', function () { moToManHinh('manKetQua'); });
+  });
+  document.getElementById('nutMoNhatKy').addEventListener('click', function () {
+    moToManHinh('manNhatKy');
+    renderNhatKy();
+  });
+
+  /* =========================================================
+     TIỆN ÍCH
+     ========================================================= */
+  function formatTien(n) {
+    n = Math.round(Number(n) || 0);
+    return n.toLocaleString('vi-VN') + ' đ';
+  }
+  function formatTrieu(n) {
+    const t = (Number(n) || 0) / 1000000;
+    return (Math.round(t * 10) / 10).toLocaleString('vi-VN') + ' triệu';
+  }
+  function layGiaTri(id) {
+    const raw = String(document.getElementById(id).value || '').replace(/[^\d]/g, '');
+    return Number(raw || 0);
+  }
+  function dinhDangSoNhap(el) {
+    el.addEventListener('input', function () {
+      const so = Number(el.value.replace(/[^\d]/g, '') || 0);
+      el.value = so > 0 ? so.toLocaleString('vi-VN') : '';
+      const cuoi = el.value.length;
+      try { el.setSelectionRange(cuoi, cuoi); } catch (loi) {}
+    });
+    const soKhoiTao = Number(el.value.replace(/[^\d]/g, '') || 0);
+    el.value = soKhoiTao > 0 ? soKhoiTao.toLocaleString('vi-VN') : '';
+  }
+  function khoangChiPhi(d) {
+    return d.thapTrieu.toLocaleString('vi-VN') + ' - ' + d.caoTrieu.toLocaleString('vi-VN') + ' triệu / người';
+  }
+  function lienKetGoogleMaps(ten) {
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ten);
+  }
+
+  /* =========================================================
+     DỮ LIỆU LÕI
+     ========================================================= */
+  const seasonData = {
+    xuan: {
+      ten: 'Xuân', heSo: { may_bay: 1.5, xe_khach: 1.2, xe_may: 1.0 },
+      canhBao: 'Mùa Xuân thường trùng Tết Nguyên Đán — vé máy bay và xe khách tăng giá mạnh, ghế cực kỳ khan hiếm.',
+      meo: 'Đặt vé trước ít nhất 6-8 tuần, chốt luôn lưu trú trước khoảng 1 tháng để tránh cháy phòng.'
+    },
+    ha: {
+      ten: 'Hạ', heSo: { may_bay: 1.35, xe_khach: 1.15, xe_may: 1.0 },
+      canhBao: 'Mùa Hè là cao điểm du lịch biển — sân bay dễ delay, resort ven biển hay full phòng cuối tuần.',
+      meo: 'Đặt vé máy bay và khách sạn trước 3-4 tuần để có giá tốt và còn nhiều lựa chọn phòng.'
+    },
+    thu: {
+      ten: 'Thu', heSo: { may_bay: 0.9, xe_khach: 0.95, xe_may: 1.0 },
+      canhBao: 'Mùa Thu thời tiết dễ chịu, đây là mùa thấp điểm nên giá vé và phòng thường mềm hơn hẳn.',
+      meo: 'Chỉ cần đặt trước 1-2 tuần vẫn còn nhiều lựa chọn giá tốt, khá thoải mái về thời gian.'
+    },
+    dong: {
+      ten: 'Đông', heSo: { may_bay: 1.05, xe_khach: 1.0, xe_may: 0.9 },
+      canhBao: 'Mùa Đông miền Bắc lạnh đẹp (Sa Pa, Hà Giang) nhưng miền Trung dễ mưa bão, cần theo dõi thời tiết sát ngày đi.',
+      meo: 'Đặt trước 2-3 tuần, nên ưu tiên các điểm miền Nam hoặc Tây Nguyên nếu ngại lạnh và mưa.'
+    }
+  };
+
+  const phuongTienData = {
+    may_bay: { ten: 'Máy bay', coBan: 2500000 },
+    xe_khach: { ten: 'Xe khách giường nằm', coBan: 450000 },
+    xe_may: { ten: 'Xe máy phượt', coBan: 180000 }
+  };
+
+  const luuTruData = {
+    homestay: { ten: 'Homestay', giaMoiDem: 150000, meo: 'Chọn nơi có đánh giá thật từ khách đã ở, hỏi thẳng chủ nhà vài quán đặc sản gần đó — thường chuẩn hơn review trên mạng.' },
+    khach_san_3_sao: { ten: 'Khách sạn 3 sao', giaMoiDem: 400000, meo: 'Đặt qua ứng dụng uy tín, xem kỹ ảnh thật từ khách từng ở (không chỉ ảnh do khách sạn tự đăng) để tránh hình khác thực tế.' },
+    resort_cao_cap: { ten: 'Resort cao cấp', giaMoiDem: 1200000, meo: 'Hỏi kỹ phí dịch vụ và phụ thu trước khi đặt, đặt sớm để có phòng view đẹp — resort đẹp thường hết phòng view trước tiên.' }
+  };
+
+  const ANUONG_MOI_NGAY_MOI_NGUOI = 300000;
+  const VUICHOI_MOI_NGAY_MOI_NGUOI = 200000;
+
+  const mauTag = {
+    'Biển': { bg: '#e0f2fe', chu: '#075985' },
+    'Núi': { bg: '#dcfce7', chu: '#166534' },
+    'Thành phố': { bg: '#ede9fe', chu: '#5b21b6' },
+    'Phượt / Cắm trại': { bg: '#fef3c7', chu: '#92400e' },
+    'Nghỉ dưỡng': { bg: '#fdf2f8', chu: '#be185d' },
+    'Ẩm thực': { bg: '#fff7ed', chu: '#c2410c' }
+  };
+
+  const diaDiemData = [
+    { ten: 'Cần Thơ', nhom: 'duoi3', tags: ['Phượt / Cắm trại', 'Thành phố', 'Ẩm thực'], moTa: 'Miền Tây sông nước, nổi tiếng với chợ nổi Cái Răng.', thapTrieu: 1.5, caoTrieu: 2.5, noiBat: ['Chợ nổi', 'Ẩm thực miền Tây', 'Gần Sài Gòn'], dacSan: ['Bún cá Cần Thơ', 'Ốc nướng tiêu', 'Nem nướng Cái Răng', 'Bánh cống', 'Lẩu mắm miền Tây', 'Chè bưởi Cần Thơ'], meoAn: 'Ăn ở chợ nổi từ sớm mới đúng nhịp sống và đúng vị của dân địa phương; buổi tối ra phố đi bộ Ninh Kiều ăn vặt cũng rất đáng thử.' },
+    { ten: 'An Giang', nhom: 'duoi3', tags: ['Núi', 'Phượt / Cắm trại'], moTa: 'Núi Sam, rừng tràm Trà Sư và văn hóa Khmer đặc sắc.', thapTrieu: 1.5, caoTrieu: 2, noiBat: ['Rừng tràm', 'Núi Cấm', 'Văn hóa Khmer'], dacSan: ['Bún cá Châu Đốc', 'Gỏi sầu đâu', 'Mắm Châu Đốc', 'Bò cạp Bảy Núi', 'Xôi xiêm'], meoAn: 'Mua mắm nên ra hẳn chợ Châu Đốc, tránh mua ở quán ven đường dễ bị nói thách và mắm không đúng loại.' },
+    { ten: 'Đồng Tháp', nhom: 'duoi3', tags: ['Phượt / Cắm trại'], moTa: 'Đồng Tháp Mười mùa nước nổi, vườn quốc gia Tràm Chim.', thapTrieu: 1.2, caoTrieu: 2, noiBat: ['Sen hồng', 'Chim di trú', 'Yên bình'], dacSan: ['Cá lóc nướng trui', 'Lẩu cá linh bông điên điển', 'Bánh xèo miền Tây', 'Chuột đồng nướng lu', 'Hủ tiếu Sa Đéc'], meoAn: 'Món cá linh bông điên điển chỉ chuẩn vị vào mùa nước nổi khoảng tháng 9-11, đi mùa khác sẽ khó tìm đúng vị.' },
+    { ten: 'Tây Ninh', nhom: 'duoi3', tags: ['Núi', 'Phượt / Cắm trại'], moTa: 'Núi Bà Đen, cáp treo và hồ Dầu Tiếng, đi về trong ngày.', thapTrieu: 1, caoTrieu: 1.8, noiBat: ['Cáp treo Bà Đen', 'Cắm trại hồ', 'Đi trong ngày'], dacSan: ['Bánh tráng phơi sương Trảng Bàng', 'Muối tôm Tây Ninh', 'Ốc núi Bà Đen', 'Bánh canh Trảng Bàng'], meoAn: 'Mua muối tôm làm quà nhớ xem hạn sử dụng, chọn hàng đóng gói kỹ, tránh hàng chợ trôi nổi không rõ nguồn gốc.' },
+
+    { ten: 'Vũng Tàu', nhom: '3-5', tags: ['Biển'], moTa: 'Biển gần Sài Gòn, thích hợp đi cuối tuần ngắn ngày.', thapTrieu: 1.5, caoTrieu: 3.5, noiBat: ['Biển gần Sài Gòn', 'Hải sản', 'Tượng Chúa Kitô'], dacSan: ['Bánh khọt Vũng Tàu', 'Lẩu cá đuối', 'Bánh bông lan trứng muối', 'Gỏi cá mai', 'Bánh xèo miền biển'], meoAn: 'Né các quán hải sản không niêm yết giá gần bãi biển, luôn hỏi giá trước khi gọi món để tránh bị chặt chém.' },
+    { ten: 'Mũi Né - Phan Thiết', nhom: '3-5', tags: ['Biển'], moTa: 'Đồi cát bay nổi tiếng, nhiều resort giá tốt.', thapTrieu: 3, caoTrieu: 5, noiBat: ['Đồi cát bay', 'Resort giá tốt', 'Lướt ván diều'], dacSan: ['Cá lóc nướng trui Mũi Né', 'Bánh căn', 'Mực một nắng', 'Gỏi cá mai Phan Thiết', 'Nước mắm Phan Thiết'], meoAn: 'Mực một nắng mua trực tiếp ở lò làm sẽ tươi và rẻ hơn hẳn so với chợ du lịch, hỏi kỹ nơi sản xuất trước khi mua làm quà.' },
+    { ten: 'Hà Tiên', nhom: '3-5', tags: ['Biển', 'Phượt / Cắm trại'], moTa: 'Biển còn hoang sơ, ít khách du lịch, gần Phú Quốc.', thapTrieu: 2.5, caoTrieu: 4, noiBat: ['Biển hoang sơ', 'Gần Phú Quốc', 'Ít du khách'], dacSan: ['Bún kèn Hà Tiên', 'Ốc giác', 'Gỏi cá trích Hà Tiên', 'Bánh thốt nốt'], meoAn: 'Ra chợ đêm Hà Tiên ăn hải sản thường có giá mềm hơn nhà hàng lớn nhiều, mặc cả nhẹ nhàng vẫn được.' },
+
+    { ten: 'Đà Lạt', nhom: '5-10', tags: ['Núi', 'Thành phố', 'Nghỉ dưỡng', 'Ẩm thực'], moTa: 'Khí hậu mát mẻ quanh năm, nổi tiếng với cà phê và hoa.', thapTrieu: 5, caoTrieu: 8, noiBat: ['Khí hậu mát mẻ', 'Cà phê, hoa', 'Check-in sống ảo'], dacSan: ['Lẩu gà lá é', 'Bánh tráng nướng', 'Sữa đậu nành nóng', 'Atiso Đà Lạt', 'Bánh căn Đà Lạt', 'Kem bơ'], meoAn: 'Chợ đêm Đà Lạt đông nên hỏi giá trước khi ngồi, một số quán chặt chém khách du lịch — ưu tiên quán có menu niêm yết rõ.' },
+    { ten: 'Phú Quốc', nhom: '5-10', tags: ['Biển', 'Nghỉ dưỡng', 'Ẩm thực'], moTa: 'Đảo ngọc với biển đẹp và cáp treo vượt biển dài nhất.', thapTrieu: 6, caoTrieu: 10, noiBat: ['Biển đẹp', 'Cáp treo Hòn Thơm', 'Hải sản tươi'], dacSan: ['Bún quậy', 'Gỏi cá trích', 'Nhum nướng mỡ hành', 'Rượu sim Phú Quốc', 'Gỏi cá nhồng', 'Nước mắm Phú Quốc'], meoAn: 'Né nhà hàng có người mời chào lôi kéo ngoài đường, ăn theo review thật trong hẻm địa phương mới đúng vị và giá hợp lý.' },
+    { ten: 'Đà Nẵng', nhom: '5-10', tags: ['Biển', 'Thành phố', 'Nghỉ dưỡng', 'Ẩm thực'], moTa: 'Cầu Vàng Bà Nà Hills, biển Mỹ Khê và ẩm thực đa dạng.', thapTrieu: 6, caoTrieu: 9, noiBat: ['Cầu Vàng Bà Nà', 'Biển Mỹ Khê', 'Ẩm thực đa dạng'], dacSan: ['Mì Quảng', 'Bánh tráng cuốn thịt heo', 'Bún chả cá', 'Ốc hút', 'Bánh xèo Đà Nẵng', 'Bún mắm nêm'], meoAn: 'Khu An Thượng có rất nhiều quán ngon giá sinh viên, không cần vào nhà hàng lớn mới ngon — hỏi dân địa phương là chuẩn nhất.' },
+    { ten: 'Nha Trang', nhom: '5-10', tags: ['Biển', 'Nghỉ dưỡng'], moTa: 'Thiên đường lặn biển ngắm san hô và các đảo lân cận.', thapTrieu: 5, caoTrieu: 9, noiBat: ['Lặn ngắm san hô', 'Vinpearl', 'Hải sản'], dacSan: ['Bún cá sứa', 'Nem nướng Ninh Hòa', 'Ốc nhảy', 'Bánh căn Nha Trang', 'Gỏi cá mai'], meoAn: 'Chợ Đầm buổi tối có hải sản tươi giá tốt hơn hẳn khu du lịch trung tâm, nên ghé sau 6 giờ tối.' },
+    { ten: 'Quy Nhơn', nhom: '5-10', tags: ['Biển'], moTa: 'Biển hoang sơ, yên bình hơn Nha Trang hay Đà Nẵng.', thapTrieu: 5, caoTrieu: 8, noiBat: ['Biển hoang sơ', 'Eo Gió, Kỳ Co', 'Yên bình'], dacSan: ['Bánh xèo tôm nhảy', 'Bún chả cá Quy Nhơn', 'Nem chợ huyện', 'Bánh hỏi lòng heo'], meoAn: 'Ăn hải sản ở chợ Đầm Quy Nhơn thường rẻ hơn khu resort khá nhiều, giá lại tươi ngon hơn.' },
+
+    { ten: 'Hạ Long', nhom: '10-15', tags: ['Biển', 'Thành phố', 'Nghỉ dưỡng'], moTa: 'Du thuyền ngắm vịnh di sản thiên nhiên thế giới.', thapTrieu: 10, caoTrieu: 14, noiBat: ['Du thuyền vịnh', 'Hang động', 'Di sản thiên nhiên'], dacSan: ['Chả mực Hạ Long', 'Sá sùng', 'Bún bề bề', 'Ngán nướng', 'Sam biển'], meoAn: 'Chả mực xay tay giá cao hơn máy nhưng ngon hơn hẳn — nên hỏi kỹ trước khi mua để khỏi mua nhầm hàng máy giá đắt.' },
+    { ten: 'Côn Đảo', nhom: '10-15', tags: ['Biển', 'Nghỉ dưỡng'], moTa: 'Biển hoang sơ, yên tĩnh, nơi lặn ngắm rùa biển.', thapTrieu: 10, caoTrieu: 15, noiBat: ['Biển hoang sơ', 'Lặn ngắm rùa biển', 'Yên tĩnh'], dacSan: ['Mứt hạt bàng', 'Gỏi cá mập', 'Ốc vú nàng', 'Cá thu một nắng'], meoAn: 'Đồ ăn trên đảo giá nhỉnh hơn đất liền do vận chuyển xa, nên chuẩn bị tinh thần và hỏi giá trước khi order.' },
+    { ten: 'Phú Quốc cao cấp', nhom: '10-15', tags: ['Biển', 'Nghỉ dưỡng'], moTa: 'Nghỉ dưỡng resort 5 sao, Grand World về đêm.', thapTrieu: 12, caoTrieu: 15, noiBat: ['Resort 5 sao', 'Grand World', 'Giải trí về đêm'], dacSan: ['Bún quậy', 'Hải sản cao cấp tại resort', 'Rượu sim Phú Quốc'], meoAn: 'Hỏi phí phụ thu dịch vụ trước khi order tại resort để khỏi giật mình lúc thanh toán — nhiều nơi tính thêm 15-20%.' },
+    { ten: 'Hội An - Đà Nẵng - Huế', nhom: '10-15', tags: ['Thành phố', 'Biển', 'Nghỉ dưỡng', 'Ẩm thực'], moTa: 'Hành trình dài ngày qua ba thành phố di sản miền Trung.', thapTrieu: 10, caoTrieu: 14, noiBat: ['Phố cổ', 'Di sản văn hóa', 'Ẩm thực miền Trung'], dacSan: ['Cao lầu Hội An', 'Bún bò Huế', 'Bánh bèo Huế', 'Cơm hến', 'Mì Quảng', 'Bánh ép Huế'], meoAn: 'Phố cổ Hội An về đêm giá đồ ăn dễ đội lên, nên hỏi giá trước khi ngồi xuống; ăn ở Huế nên thử theo set nhỏ nhiều món để đỡ ngán.' },
+
+    { ten: 'Thái Lan (Bangkok - Pattaya)', nhom: 'tren15', tags: ['Thành phố', 'Biển', 'Ẩm thực'], moTa: 'Chùa vàng, chợ đêm sôi động, chi phí hợp lý cho du lịch nước ngoài.', thapTrieu: 15, caoTrieu: 20, noiBat: ['Chùa vàng', 'Chợ đêm', 'Vé máy bay rẻ'], dacSan: ['Tom yum', 'Pad Thái', 'Xôi xoài', 'Som tam', 'Mango sticky rice', 'Satay gà'], meoAn: 'Ăn ở chợ đêm địa phương thường ngon và rẻ hơn nhà hàng khu du lịch nhiều, cứ theo hàng nào đông người bản địa xếp hàng là chuẩn.' },
+    { ten: 'Singapore', nhom: 'tren15', tags: ['Thành phố', 'Ẩm thực'], moTa: 'Đô thị hiện đại, sạch đẹp với Marina Bay và Sentosa.', thapTrieu: 18, caoTrieu: 25, noiBat: ['Marina Bay', 'Sentosa', 'Hiện đại'], dacSan: ['Cơm gà Hải Nam', 'Laksa', 'Chili crab', 'Bak kut teh', 'Char kway teow'], meoAn: 'Ăn ở hawker center (khu ẩm thực bình dân) tiết kiệm hơn nhà hàng khoảng 2-3 lần mà chất lượng vẫn rất tốt.' },
+    { ten: 'Bali, Indonesia', nhom: 'tren15', tags: ['Biển', 'Núi'], moTa: 'Đền thiêng, biển đẹp và văn hóa bản địa độc đáo.', thapTrieu: 17, caoTrieu: 22, noiBat: ['Đền thiêng', 'Biển đẹp', 'Văn hóa độc đáo'], dacSan: ['Nasi goreng', 'Sate lilit', 'Babi guling', 'Lawar'], meoAn: 'Chọn quán "warung" địa phương thay vì nhà hàng khu du lịch để vừa rẻ vừa đúng vị bản địa hơn.' },
+    { ten: 'Hàn Quốc (Seoul)', nhom: 'tren15', tags: ['Thành phố'], moTa: 'Văn hóa K-pop, mùa hoa hoặc lá đỏ, thiên đường mua sắm.', thapTrieu: 22, caoTrieu: 30, noiBat: ['Văn hóa Hàn', 'Mùa hoa / lá', 'Mua sắm'], dacSan: ['Thịt nướng Hàn Quốc', 'Tokbokki', 'Kimbap', 'Canh kim chi', 'Mì lạnh Naengmyeon'], meoAn: 'Khu Myeongdong ban ngày đông nhưng có nhiều suất ăn thử miễn phí, giá rẻ, tha hồ nếm thử trước khi mua.' },
+    { ten: 'Nhật Bản (Osaka - Tokyo)', nhom: 'tren15', tags: ['Thành phố', 'Núi', 'Ẩm thực'], moTa: 'Hoa anh đào, ẩm thực tinh tế và công nghệ hiện đại.', thapTrieu: 25, caoTrieu: 35, noiBat: ['Hoa anh đào', 'Ẩm thực Nhật', 'Công nghệ hiện đại'], dacSan: ['Takoyaki', 'Okonomiyaki', 'Ramen', 'Sushi băng chuyền', 'Wagyu nướng'], meoAn: 'Khu Dotonbori Osaka buổi tối rất đông, nên đi sớm để khỏi xếp hàng lâu; quán ramen nhỏ trong hẻm thường ngon hơn chuỗi lớn.' }
+  ];
+
+  const nhomNganSach = {
+    duoi3: { nhan: 'Tiết kiệm', khoang: 'Dưới 3 triệu / người' },
+    '3-5': { nhan: 'Vừa túi tiền', khoang: '3 - 5 triệu / người' },
+    '5-10': { nhan: 'Thoải mái', khoang: '5 - 10 triệu / người' },
+    '10-15': { nhan: 'Cao cấp', khoang: '10 - 15 triệu / người' },
+    tren15: { nhan: 'Sang chảnh quốc tế', khoang: 'Trên 15 triệu / người' }
+  };
+
+  const meoBanDiaData = [
+    { diaDiem: 'Phú Quốc', noiDung: 'Quán bún quậy khu chợ đêm Dinh Cậu vừa tăng giá thêm khoảng 20%, mấy sen nên hỏi giá trước khi ngồi xuống.' },
+    { diaDiem: 'Đà Lạt', noiDung: 'Buổi tối ở chợ Đà Lạt hay có người mời chào bánh tráng nướng giá cao gấp đôi bình thường, cứ đi thẳng vào trong chợ sẽ rẻ hơn.' },
+    { diaDiem: 'Đà Nẵng', noiDung: 'Taxi ở khu biển Mỹ Khê giờ cao điểm hay đi vòng, nên đặt app (Grab/Xanh SM) thay vì bắt xe dọc đường.' },
+    { diaDiem: 'Nha Trang', noiDung: 'Một số tour lặn biển tự phát ở bến tàu du lịch không có bảo hiểm, nên đặt qua đơn vị có giấy phép rõ ràng.' },
+    { diaDiem: 'Hạ Long', noiDung: 'Giá tour du thuyền ngày thường rẻ hơn cuối tuần khá nhiều, nếu linh hoạt được ngày đi sẽ tiết kiệm kha khá.' },
+    { diaDiem: 'Vũng Tàu', noiDung: 'Khu Bãi Sau cuối tuần hải sản dễ bị đội giá, mấy sen nhớ hỏi giá theo ký trước khi gọi món.' },
+    { diaDiem: 'Hội An - Đà Nẵng - Huế', noiDung: 'Phố cổ Hội An sau 8 giờ tối giá đồ lưu niệm hay bị đẩy lên, trả giá thoải mái vẫn được nha.' },
+    { diaDiem: 'Mũi Né - Phan Thiết', noiDung: 'Mực một nắng mua ở các lò làm trực tiếp ngoài trung tâm sẽ rẻ hơn khu du lịch tới 30-40%.' },
+    { diaDiem: 'Thái Lan (Bangkok - Pattaya)', noiDung: 'Taxi ở sân bay Bangkok nên yêu cầu bật đồng hồ tính tiền (meter), tránh mấy bác tài ra giá trọn gói cao hơn nhiều.' },
+    { diaDiem: 'Singapore', noiDung: 'Vé vào Gardens by the Bay mua online trước thường rẻ hơn mua tại cổng, lại khỏi xếp hàng.' }
+  ];
+
+  function xacDinhNhom(perPerson) {
+    if (perPerson < 3000000) return 'duoi3';
+    if (perPerson < 5000000) return '3-5';
+    if (perPerson < 10000000) return '5-10';
+    if (perPerson < 15000000) return '10-15';
+    return 'tren15';
+  }
+
+  /* =========================================================
+     TRẠNG THÁI
+     ========================================================= */
+  const state = {
+    mua: 'ha',
+    phuongTien: 'may_bay',
+    luuTruKieu: 'khach_san_3_sao',
+    soThich: ['Biển'],
+    tagChon: [],
+    diemDenChon: [],
+    nganSachDiaDiemDaSua: false,
+    cheDoDiaDiem: 'ngan_sach',
+    uuTien: { luuTru: 35, anUong: 35, vuiChoi: 30 },
+    nhatKy: [],
+    dauChiTieuKeTiep: 1,
+    daHienHuyHieu: false
+  };
+
+  let bieuDoPhanBo = null;
+  let bieuDoBangQuan = null;
+  let ketQuaMoiNhat = null;
+
+  /* =========================================================
+     CHỌN CÁC Ô LỰA CHỌN ĐƠN / ĐA
+     ========================================================= */
+  function thietLapNhomChonDon(idContainer, thuocTinh, keyState) {
+    const cont = document.getElementById(idContainer);
+    cont.querySelectorAll('.the-lua-chon').forEach(function (btn) {
+      if (btn.dataset[thuocTinh] === state[keyState]) btn.classList.add('dang-chon');
+      btn.addEventListener('click', function () {
+        state[keyState] = btn.dataset[thuocTinh];
+        cont.querySelectorAll('.the-lua-chon').forEach(function (b) { b.classList.remove('dang-chon'); });
+        btn.classList.add('dang-chon');
+      });
+    });
+  }
+  thietLapNhomChonDon('chonMua', 'mua', 'mua');
+  thietLapNhomChonDon('chonPhuongTien', 'phuongTien', 'phuongTien');
+  thietLapNhomChonDon('chonLuuTru', 'luuTru', 'luuTruKieu');
+
+  document.getElementById('chonSoThich').querySelectorAll('button').forEach(function (btn) {
+    const gt = btn.dataset.soThich;
+    if (state.soThich.indexOf(gt) !== -1) btn.classList.add('dang-chon', 'mau-hong');
+    btn.addEventListener('click', function () {
+      const idx = state.soThich.indexOf(gt);
+      if (idx === -1) { state.soThich.push(gt); btn.classList.add('dang-chon', 'mau-hong'); }
+      else { state.soThich.splice(idx, 1); btn.classList.remove('dang-chon', 'mau-hong'); }
+    });
+  });
+
+  dinhDangSoNhap(document.getElementById('viTien'));
+  document.getElementById('viTien').addEventListener('input', function () {
+    document.getElementById('viTienGoiY').textContent = formatTrieu(layGiaTri('viTien'));
+  });
+  document.getElementById('viTienGoiY').textContent = formatTrieu(layGiaTri('viTien'));
+
+  /* =========================================================
+     TRỌNG SỐ COBB-DOUGLAS (3 NHÓM LINH HOẠT)
+     ========================================================= */
+  function trongSoHieuChinh() {
+    let luuTru = state.uuTien.luuTru, anUong = state.uuTien.anUong, vuiChoi = state.uuTien.vuiChoi;
+    if (state.soThich.indexOf('Ẩm thực') !== -1) anUong += 15;
+    if (state.soThich.indexOf('Nghỉ dưỡng') !== -1) luuTru += 15;
+    return { luuTru: luuTru, anUong: anUong, vuiChoi: vuiChoi };
+  }
+  function chuanHoaUuTien() {
+    const t = trongSoHieuChinh();
+    const tong = t.luuTru + t.anUong + t.vuiChoi;
+    return { luuTru: t.luuTru / tong, anUong: t.anUong / tong, vuiChoi: t.vuiChoi / tong };
+  }
+
+  /* =========================================================
+     TÍNH TOÁN TỔNG HỢP
+     ========================================================= */
+  function tinh() {
+    const viTien = layGiaTri('viTien');
+    const soNgay = Math.max(layGiaTri('soNgay'), 1);
+    const soNguoi = Math.max(layGiaTri('soNguoi'), 1);
+    const soDem = Math.max(soNgay - 1, 1);
+
+    const heSoMuaVu = seasonData[state.mua].heSo[state.phuongTien];
+    const diChuyenCoBan = phuongTienData[state.phuongTien].coBan * heSoMuaVu * soNguoi;
+
+    const luuTruMongMuon = luuTruData[state.luuTruKieu].giaMoiDem * soDem * soNguoi;
+    const anUongMacDinh = ANUONG_MOI_NGAY_MOI_NGUOI * soNgay * soNguoi;
+    const vuiChoiMacDinh = VUICHOI_MOI_NGAY_MOI_NGUOI * soNgay * soNguoi;
+
+    const tongChiPhiDeXuat = diChuyenCoBan + luuTruMongMuon + anUongMacDinh + vuiChoiMacDinh;
+    const chenhLech = viTien - tongChiPhiDeXuat;
+
+    const nganSachLinhHoatGoc = luuTruMongMuon + anUongMacDinh + vuiChoiMacDinh;
+    const nganSachLinhHoat = viTien > 0 ? Math.max(viTien - diChuyenCoBan, nganSachLinhHoatGoc * 0.15) : nganSachLinhHoatGoc;
+
+    const a = chuanHoaUuTien();
+    const luuTruPhanBo = nganSachLinhHoat * a.luuTru;
+    const anUongPhanBo = nganSachLinhHoat * a.anUong;
+    const vuiChoiPhanBo = nganSachLinhHoat * a.vuiChoi;
+
+    const tongNganSachThucTe = diChuyenCoBan + nganSachLinhHoat;
+    const nganSachMoiNguoi = viTien > 0 ? (viTien / soNguoi) : (tongNganSachThucTe / soNguoi);
+
+    return {
+      viTien: viTien, soNgay: soNgay, soNguoi: soNguoi, soDem: soDem,
+      heSoMuaVu: heSoMuaVu, diChuyenCoBan: diChuyenCoBan,
+      luuTruMongMuon: luuTruMongMuon, anUongMacDinh: anUongMacDinh, vuiChoiMacDinh: vuiChoiMacDinh,
+      tongChiPhiDeXuat: tongChiPhiDeXuat, chenhLech: chenhLech,
+      nganSachLinhHoat: nganSachLinhHoat, a: a,
+      luuTruPhanBo: luuTruPhanBo, anUongPhanBo: anUongPhanBo, vuiChoiPhanBo: vuiChoiPhanBo,
+      tongNganSachThucTe: tongNganSachThucTe, nganSachMoiNguoi: nganSachMoiNguoi
+    };
+  }
+
+  /* =========================================================
+     RENDER MÀN KẾT QUẢ
+     ========================================================= */
+  function renderKetQua() {
+    const k = tinh();
+    ketQuaMoiNhat = k;
+
+    // Nhu cầu 1: Đủ tiền không?
+    const elKL = document.getElementById('ketLuanDuTien');
+    if (k.chenhLech >= 0) {
+      elKL.className = 'ket-luan-lon tot';
+      elKL.innerHTML = 'Đủ sức quẩy rồi sen ơi, dư hẳn ' + formatTien(k.chenhLech) + ' để mua quà!' +
+        '<div class="so-lieu-nho">Chi phí ước tính cho lựa chọn của sen: ' + formatTien(k.tongChiPhiDeXuat) + ' — ví tiền: ' + formatTien(k.viTien) + '</div>';
+    } else {
+      elKL.className = 'ket-luan-lon canh-bao';
+      elKL.innerHTML = 'Hơi thiếu tí, gom thêm ' + formatTien(-k.chenhLech) + ' nữa nhen sen!' +
+        '<div class="so-lieu-nho">Chi phí ước tính cho lựa chọn của sen: ' + formatTien(k.tongChiPhiDeXuat) + ' — ví tiền: ' + formatTien(k.viTien) + '</div>';
+    }
+
+    // Nhu cầu 2: Mùa
+    const s = seasonData[state.mua];
+    document.getElementById('canhBaoMua').textContent = s.canhBao;
+    document.getElementById('meoDatVe').textContent = 'Mẹo đặt vé: ' + s.meo;
+
+    // Nhu cầu 4: cảnh báo mùa vụ bóp ngân sách
+    const elCanhBaoMV = document.getElementById('canhBaoMuaVu');
+    if (k.heSoMuaVu > 1.2) {
+      elCanhBaoMV.style.display = 'block';
+      elCanhBaoMV.textContent = 'Mùa này đi bằng ' + phuongTienData[state.phuongTien].ten.toLowerCase() + ' đắt hơn bình thường tận ' + Math.round((k.heSoMuaVu - 1) * 100) + '%, nên ví lưu trú - ăn chơi của sen bị bóp nhẹ lại đó, thông cảm cho trẫm nha!';
+    } else {
+      elCanhBaoMV.style.display = 'none';
+    }
+
+    // Ngân sách chi tiêu
+    document.getElementById('diChuyenHienThi').textContent = formatTien(k.diChuyenCoBan);
+    document.getElementById('nganSachLinhHoatHienThi').textContent = formatTien(k.nganSachLinhHoat);
+
+    const phanBo = [
+      { ten: 'Di chuyển', tien: k.diChuyenCoBan, mau: '#f97316' },
+      { ten: 'Lưu trú', tien: k.luuTruPhanBo, mau: '#0284c7' },
+      { ten: 'Ăn uống', tien: k.anUongPhanBo, mau: '#16a34a' },
+      { ten: 'Vui chơi / Mua sắm', tien: k.vuiChoiPhanBo, mau: '#7c3aed' }
+    ];
+    const tbody = document.getElementById('bangPhanBoBody');
+    tbody.innerHTML = phanBo.map(function (p) {
+      const ty = k.tongNganSachThucTe > 0 ? (p.tien / k.tongNganSachThucTe) * 100 : 0;
+      return '<tr><td><span class="cham-mau" style="background:' + p.mau + '"></span>' + p.ten + '</td>' +
+        '<td class="so">' + Math.round(ty) + '%</td>' +
+        '<td class="so">' + formatTien(p.tien) + '</td></tr>';
+    }).join('');
+
+    const canvas = document.getElementById('bieuDoPhanBo');
+    const duLieu = phanBo.map(function (p) { return Math.round(p.tien); });
+    if (canvas && canvas.offsetParent !== null) {
+      if (!bieuDoPhanBo) {
+        bieuDoPhanBo = new Chart(canvas, {
+          type: 'doughnut',
+          data: { labels: phanBo.map(function (p) { return p.ten; }), datasets: [{ data: duLieu, backgroundColor: phanBo.map(function (p) { return p.mau; }), borderColor: '#fff', borderWidth: 2 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } } }
+        });
+      } else {
+        bieuDoPhanBo.data.datasets[0].data = duLieu;
+        bieuDoPhanBo.update();
+      }
+    }
+
+    // Khu học thuật
+    capNhatNhanUuTien();
+    let u = 1;
+    [{ ty: k.a.luuTru }, { ty: k.a.anUong }, { ty: k.a.vuiChoi }].forEach(function (p) {
+      const xiTrieu = Math.max((k.nganSachLinhHoat * p.ty) / 1000000, 0.01);
+      u *= Math.pow(xiTrieu, p.ty);
+    });
+    document.getElementById('chiSoThoaDung').textContent = (Math.round(u * 100) / 100).toLocaleString('vi-VN') + ' điểm';
+    capNhatBieuDoBangQuan(k);
+
+    // Địa điểm
+    if (!state.nganSachDiaDiemDaSua) {
+      document.getElementById('nganSachDiaDiem').value = Math.round(k.nganSachMoiNguoi);
+    }
+    renderDiemDen();
+
+    // Lưu trú
+    const lt = luuTruData[state.luuTruKieu];
+    document.getElementById('tenLuuTruGoiY').textContent = lt.ten;
+    document.getElementById('giaLuuTruGoiY').textContent = 'Khoảng ' + formatTien(lt.giaMoiDem) + ' / người / đêm — ước tính ' + formatTien(k.luuTruMongMuon) + ' cho ' + k.soDem + ' đêm, ' + k.soNguoi + ' người.';
+    document.getElementById('meoLuuTruGoiY').textContent = lt.meo;
+
+    // Banner ẩm thực
+    const bannerAT = document.getElementById('bannerAmThuc');
+    if (state.soThich.indexOf('Ẩm thực') !== -1) {
+      bannerAT.style.display = 'block';
+      bannerAT.textContent = 'Sen mê ăn uống hả? Để trẫm gào tên vài chỗ ngon nhức nách ngay trong từng thẻ địa điểm bên dưới!';
+    } else {
+      bannerAT.style.display = 'none';
+    }
+
+    renderMeoBanDia();
+    kiemTraKetThucChuyenDi();
+  }
+
+  function capNhatNhanUuTien() {
+    const a = chuanHoaUuTien();
+    document.getElementById('uuTienLuuTruNhan').textContent = Math.round(a.luuTru * 100) + '%';
+    document.getElementById('uuTienAnUongNhan').textContent = Math.round(a.anUong * 100) + '%';
+    document.getElementById('uuTienVuiChoiNhan').textContent = Math.round(a.vuiChoi * 100) + '%';
+  }
+
+  function capNhatBieuDoBangQuan(k) {
+    const canvas = document.getElementById('bieuDoBangQuan');
+    if (!canvas || canvas.offsetParent === null) return;
+    const B = k.nganSachLinhHoat / 1000000;
+    const beta = Math.min(Math.max(k.a.vuiChoi, 0.03), 0.97);
+    const alpha = 1 - beta;
+    const Xopt = alpha * B;
+    const Yopt = beta * B;
+    const Uopt = Math.pow(Math.max(Xopt, 0.01), alpha) * Math.pow(Math.max(Yopt, 0.01), beta);
+
+    function duongBangQuan(U) {
+      const diem = [];
+      const soDoan = 36;
+      const xMin = Math.max(B * 0.04, 0.05);
+      const xMax = B * 1.5;
+      for (let i = 0; i <= soDoan; i++) {
+        const x = xMin + (xMax - xMin) * (i / soDoan);
+        const y = Math.pow(U / Math.pow(x, alpha), 1 / beta);
+        if (isFinite(y) && y >= 0 && y <= B * 2.5) { diem.push({ x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100 }); }
+      }
+      return diem;
+    }
+
+    const duongNganSach = [{ x: 0, y: Math.round(B * 100) / 100 }, { x: Math.round(B * 100) / 100, y: 0 }];
+
+    const datasets = [
+      { type: 'line', label: 'Đường ngân sách linh hoạt', data: duongNganSach, borderColor: '#16233a', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, fill: false },
+      { type: 'line', label: 'Bàng quan thấp hơn', data: duongBangQuan(Uopt * 0.7), borderColor: '#7dd3fc', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+      { type: 'line', label: 'Bàng quan tối ưu', data: duongBangQuan(Uopt), borderColor: '#0284c7', borderWidth: 2.5, pointRadius: 0, fill: false, tension: 0.3 },
+      { type: 'line', label: 'Bàng quan cao hơn', data: duongBangQuan(Uopt * 1.3), borderColor: '#c4b5fd', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.3 },
+      { type: 'scatter', label: 'Điểm tối ưu (MRS = giá tương đối)', data: [{ x: Math.round(Xopt * 100) / 100, y: Math.round(Yopt * 100) / 100 }], borderColor: '#dc2626', backgroundColor: '#dc2626', pointRadius: 6, showLine: false }
+    ];
+
+    if (!bieuDoBangQuan) {
+      bieuDoBangQuan = new Chart(canvas, {
+        type: 'line',
+        data: { datasets: datasets },
+        options: {
+          responsive: true, maintainAspectRatio: false, parsing: false,
+          scales: {
+            x: { type: 'linear', min: 0, title: { display: true, text: 'Lưu trú + Ăn uống (triệu đ)', font: { size: 11 } } },
+            y: { type: 'linear', min: 0, title: { display: true, text: 'Vui chơi / mua sắm (triệu đ)', font: { size: 11 } } }
+          },
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+        }
+      });
+    } else {
+      bieuDoBangQuan.data.datasets = datasets;
+      bieuDoBangQuan.update();
+    }
+
+    document.getElementById('mrsToiUu').textContent =
+      'Điểm tối ưu: nhóm lưu trú + ăn uống ' + Xopt.toFixed(1) + ' triệu, vui chơi / mua sắm ' + Yopt.toFixed(1) + ' triệu. Tại điểm này, tỷ lệ thay thế biên MRS = tỷ giá tương đối = 1 — đúng điều kiện tối ưu Cobb-Douglas.';
+  }
+
+  ['uuTienLuuTru', 'uuTienAnUong', 'uuTienVuiChoi'].forEach(function (id) {
+    const key = id === 'uuTienLuuTru' ? 'luuTru' : (id === 'uuTienAnUong' ? 'anUong' : 'vuiChoi');
+    document.getElementById(id).addEventListener('input', function (e) {
+      state.uuTien[key] = Number(e.target.value);
+      renderKetQua();
+    });
+  });
+
+  /* =========================================================
+     GỢI Ý ĐỊA ĐIỂM
+     ========================================================= */
+  function renderDiemDen() {
+    if (state.cheDoDiaDiem === 'chon_truoc') { renderDiemDenChonTruoc(); }
+    else { renderDiemDenTheoNganSach(); }
+  }
+
+  function renderDiemDenTheoNganSach() {
+    document.getElementById('khoiNganSachDiaDiem').style.display = '';
+    document.getElementById('nhomNganSachHienThi').style.display = '';
+    const nganSach = layGiaTri('nganSachDiaDiem');
+    document.getElementById('nganSachDiaDiemNhan').textContent = formatTien(nganSach);
+    const nhomHienTai = xacDinhNhom(nganSach);
+    const info = nhomNganSach[nhomHienTai];
+    document.getElementById('nhomNganSachHienThi').textContent =
+      'Nhóm ngân sách: ' + info.nhan + ' (' + info.khoang + ') — dưới đây là các điểm đến phù hợp.';
+
+    let danhSach = diaDiemData.filter(function (d) { return d.nhom === nhomHienTai; });
+    danhSach = locTheoSoThich(danhSach);
+    veDanhSachDiaDiem(danhSach, false);
+  }
+
+  function renderDiemDenChonTruoc() {
+    document.getElementById('khoiNganSachDiaDiem').style.display = 'none';
+    document.getElementById('nhomNganSachHienThi').style.display = 'none';
+    let danhSach = diaDiemData.slice();
+    danhSach = locTheoSoThich(danhSach);
+    veDanhSachDiaDiem(danhSach, true);
+  }
+
+  function locTheoSoThich(danhSach) {
+    const tagLoc = state.soThich.filter(function (t) { return t === 'Biển' || t === 'Núi' || t === 'Nghỉ dưỡng' || t === 'Ẩm thực'; });
+    if (tagLoc.length === 0) return danhSach;
+    return danhSach.filter(function (d) { return d.tags.some(function (t) { return tagLoc.indexOf(t) !== -1; }); });
+  }
+
+  function veDanhSachDiaDiem(danhSach, cheDoChonTruoc) {
+    const luoi = document.getElementById('luoiDiemDen');
+    if (danhSach.length === 0) {
+      luoi.innerHTML = '<p style="color:var(--chu-phu); font-size:13px;">Không có điểm đến phù hợp với sở thích đã chọn. Hãy bỏ bớt sở thích ở trang chủ.</p>';
+      return;
+    }
+
+    let html = '';
+    let nhomTruoc = null;
+    const uuTienDacSan = state.soThich.indexOf('Ẩm thực') !== -1;
+    danhSach.forEach(function (d) {
+      if (cheDoChonTruoc && d.nhom !== nhomTruoc) {
+        nhomTruoc = d.nhom;
+        const tt = nhomNganSach[d.nhom];
+        html += '<div class="nhom-tieu-de-diem-den">' + tt.nhan + ' (' + tt.khoang + ')</div>';
+      }
+      const daChon = state.diemDenChon.indexOf(d.ten) !== -1;
+      const tags = d.tags.map(function (t) {
+        const m = mauTag[t] || { bg: '#eee', chu: '#333' };
+        return '<span class="the-tag" style="background:' + m.bg + ';color:' + m.chu + '">' + t + '</span>';
+      }).join('');
+      const nutChinh = cheDoChonTruoc
+        ? '<button class="nut-chon-diem-den ' + (daChon ? 'da-chon' : '') + '" data-ten="' + d.ten + '" data-hanh-dong="chon-truoc" type="button">' + (daChon ? 'Đã chọn điểm đến này' : 'Chọn điểm đến này') + '</button>'
+        : '<button class="nut-chon-diem-den ' + (daChon ? 'da-chon' : '') + '" data-ten="' + d.ten + '" data-hanh-dong="them-bao-cao" type="button">' + (daChon ? 'Đã thêm vào báo cáo' : '+ Thêm vào báo cáo') + '</button>';
+
+      const khoiDacSan = uuTienDacSan
+        ? '<div class="khoi-dac-san"><div class="nhan-dac-san">Đặc sản phải ăn</div><div class="mon-an">' + d.dacSan.join(' · ') + '</div><div class="meo-an">' + d.meoAn + '</div></div>'
+        : '<div class="khoi-dac-san"><div class="nhan-dac-san">Đặc sản gợi ý</div><div class="mon-an">' + d.dacSan.slice(0, 2).join(' · ') + '</div></div>';
+
+      html += '<div class="the-diem-den">' +
+        '<div class="the-tags">' + tags + '</div>' +
+        '<h4>' + d.ten + '</h4>' +
+        '<p class="mo-ta">' + d.moTa + '</p>' +
+        '<div class="chi-phi">' + khoangChiPhi(d) + '</div>' +
+        khoiDacSan +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' + nutChinh +
+        '<a class="lien-ket-map" href="' + lienKetGoogleMaps(d.ten) + '" target="_blank" rel="noopener">Xem trên Google Maps ↗</a>' +
+        '</div></div>';
+    });
+    luoi.innerHTML = html;
+
+    luoi.querySelectorAll('[data-hanh-dong="them-bao-cao"]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        const ten = e.currentTarget.dataset.ten;
+        const idx = state.diemDenChon.indexOf(ten);
+        if (idx === -1) { state.diemDenChon.push(ten); } else { state.diemDenChon.splice(idx, 1); }
+        renderDiemDen();
+      });
+    });
+    luoi.querySelectorAll('[data-hanh-dong="chon-truoc"]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        const ten = e.currentTarget.dataset.ten;
+        const d = diaDiemData.filter(function (x) { return x.ten === ten; })[0];
+        if (d) { datChonDiemDenTruoc(d); }
+      });
+    });
+  }
+
+  function datChonDiemDenTruoc(d) {
+    if (state.diemDenChon.indexOf(d.ten) === -1) { state.diemDenChon.push(d.ten); }
+    const soNguoi = Math.max(layGiaTri('soNguoi'), 1);
+    const trungBinhTrieu = (d.thapTrieu + d.caoTrieu) / 2;
+    const tongDuKien = Math.round(trungBinhTrieu * soNguoi * 1000000);
+
+    const oTien = document.getElementById('viTien');
+    oTien.value = tongDuKien.toLocaleString('vi-VN');
+    document.getElementById('viTienGoiY').textContent = formatTrieu(tongDuKien);
+
+    const banner = document.getElementById('thongBaoChonTruoc');
+    banner.style.display = 'block';
+    banner.innerHTML = 'Đã đặt ví tiền tham chiếu khoảng <b>' + formatTien(tongDuKien) + '</b> cho chuyến đi tới <b>' + d.ten + '</b> (' + soNguoi + ' người) và tính lại toàn bộ ngân sách.';
+
+    renderKetQua();
+  }
+
+  function renderMeoBanDia() {
+    const nganSach = layGiaTri('nganSachDiaDiem');
+    const nhomHienTai = xacDinhNhom(nganSach);
+    let danhSachHienTai = diaDiemData.filter(function (d) { return d.nhom === nhomHienTai; });
+    danhSachHienTai = locTheoSoThich(danhSachHienTai);
+    const tenHienTai = danhSachHienTai.map(function (d) { return d.ten; });
+
+    let meoPhuHop = meoBanDiaData.filter(function (m) { return tenHienTai.indexOf(m.diaDiem) !== -1; });
+    if (meoPhuHop.length === 0) { meoPhuHop = meoBanDiaData.slice(0, 3); }
+    meoPhuHop = meoPhuHop.slice(0, 4);
+
+    const khoi = document.getElementById('danhSachMeoBanDia');
+    khoi.innerHTML = meoPhuHop.map(function (m) {
+      return '<div class="the-meo-ban-dia"><div class="nguon-meo">' + m.diaDiem + '</div><p>' + m.noiDung + '</p></div>';
+    }).join('');
+  }
+
+  document.getElementById('cheDoDiaDiemChon').addEventListener('click', function (e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    state.cheDoDiaDiem = btn.dataset.cheDo;
+    document.querySelectorAll('#cheDoDiaDiemChon button').forEach(function (b) { b.classList.remove('dang-chon'); });
+    btn.classList.add('dang-chon');
+    renderDiemDen();
+  });
+
+  document.getElementById('nganSachDiaDiem').addEventListener('input', function () {
+    state.nganSachDiaDiemDaSua = true;
+    renderDiemDen();
+  });
+
+  /* =========================================================
+     TOGGLE KHU HỌC THUẬT
+     ========================================================= */
+  document.getElementById('nutXemPhanTich').addEventListener('click', function () {
+    const khoi = document.getElementById('khuHocThuat');
+    const dangAn = khoi.style.display === 'none' || khoi.style.display === '';
+    khoi.style.display = dangAn ? 'block' : 'none';
+    this.textContent = dangAn ? '🔍 Ẩn cơ sở phân tích khoa học' : '🔍 Xem cơ sở phân tích khoa học của Trẫm';
+    if (dangAn) { setTimeout(function () { capNhatBieuDoBangQuan(ketQuaMoiNhat || tinh()); }, 30); }
+  });
+
+  /* =========================================================
+     NÚT LÊN KẾ HOẠCH
+     ========================================================= */
+  function lenKeHoach() {
+    moToManHinh('manKetQua');
+    setTimeout(renderKetQua, 20);
+  }
+  document.getElementById('nutLenKeHoach').addEventListener('click', lenKeHoach);
+
+  /* =========================================================
+     XUẤT BÁO CÁO
+     ========================================================= */
+  function layDuLieuBaoCao() {
+    const k = ketQuaMoiNhat || tinh();
+    const nganSachDiaDiem = layGiaTri('nganSachDiaDiem');
+    const nhomHienTai = xacDinhNhom(nganSachDiaDiem);
+
+    let diemDenBaoCao = diaDiemData.filter(function (d) { return state.diemDenChon.indexOf(d.ten) !== -1; });
+    if (diemDenBaoCao.length === 0) {
+      diemDenBaoCao = diaDiemData.filter(function (d) { return d.nhom === nhomHienTai; }).slice(0, 3);
+    }
+    return { k: k, nhomHienTai: nhomHienTai, diemDenBaoCao: diemDenBaoCao };
+  }
+
+  document.getElementById('nutXuatPDF').addEventListener('click', function () {
+    const nutEl = this;
+    nutEl.disabled = true;
+    nutEl.textContent = 'Đang tạo PDF...';
+
+    const du = layDuLieuBaoCao();
+    const k = du.k;
+    const homNay = new Date().toLocaleDateString('vi-VN');
+    const s = seasonData[state.mua];
+    const lt = luuTruData[state.luuTruKieu];
+
+    const bao = document.createElement('div');
+    bao.style.cssText = 'position:absolute; left:-10000px; top:0; width:720px; background:#fff; padding:32px; font-family:"Be Vietnam Pro", sans-serif; color:#16233a;';
+    bao.innerHTML =
+      '<h1 style="font-size:22px; margin:0 0 4px;">Báo cáo tóm tắt chuyến đi</h1>' +
+      '<p style="font-size:12px; color:#5b6b83; margin:0 0 20px;">Xuất ngày ' + homNay + ' — Mùa ' + s.ten + ', ' + phuongTienData[state.phuongTien].ten + ', ' + lt.ten + '</p>' +
+
+      '<h2 style="font-size:16px; margin:0 0 8px; color:#ec4899;">1. Đủ tiền không?</h2>' +
+      '<p style="font-size:13px; margin:0 0 20px;">' + (k.chenhLech >= 0 ? 'Đủ, dư khoảng ' + formatTien(k.chenhLech) : 'Thiếu khoảng ' + formatTien(-k.chenhLech)) + ' (ví tiền ' + formatTien(k.viTien) + ' so với chi phí ước tính ' + formatTien(k.tongChiPhiDeXuat) + ')</p>' +
+
+      '<h2 style="font-size:16px; margin:0 0 8px; color:#0284c7;">2. Mùa &amp; di chuyển</h2>' +
+      '<p style="font-size:13px; margin:0 0 6px;">' + s.canhBao + '</p>' +
+      '<p style="font-size:13px; margin:0 0 20px;">Mẹo đặt vé: ' + s.meo + '</p>' +
+
+      '<h2 style="font-size:16px; margin:0 0 8px; color:#f97316;">3. Ngân sách chi tiêu</h2>' +
+      '<table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:20px;">' +
+      '<tr><td style="padding:5px 0; color:#5b6b83;">Di chuyển (' + phuongTienData[state.phuongTien].ten + ')</td><td style="padding:5px 0; text-align:right; font-weight:700;">' + formatTien(k.diChuyenCoBan) + '</td></tr>' +
+      '<tr><td style="padding:5px 0; color:#5b6b83;">Lưu trú</td><td style="padding:5px 0; text-align:right;">' + formatTien(k.luuTruPhanBo) + '</td></tr>' +
+      '<tr><td style="padding:5px 0; color:#5b6b83;">Ăn uống</td><td style="padding:5px 0; text-align:right;">' + formatTien(k.anUongPhanBo) + '</td></tr>' +
+      '<tr><td style="padding:5px 0; color:#5b6b83;">Vui chơi / Mua sắm</td><td style="padding:5px 0; text-align:right;">' + formatTien(k.vuiChoiPhanBo) + '</td></tr>' +
+      '<tr><td style="padding:5px 0; color:#5b6b83; font-weight:700;">Tổng ngân sách</td><td style="padding:5px 0; text-align:right; font-weight:700;">' + formatTien(k.tongNganSachThucTe) + '</td></tr>' +
+      '</table>' +
+
+      '<h2 style="font-size:16px; margin:0 0 8px; color:#eab308;">4. Gợi ý địa điểm &amp; đặc sản</h2>' +
+      du.diemDenBaoCao.map(function (d) {
+        return '<div style="margin-bottom:12px; padding:10px 12px; background:#f7f4ec; border-radius:8px;">' +
+          '<div style="font-weight:700; font-size:14px;">' + d.ten + '</div>' +
+          '<div style="font-size:12px; color:#5b6b83; margin:3px 0;">' + d.moTa + '</div>' +
+          '<div style="font-size:12px; font-weight:700; color:#0284c7;">' + khoangChiPhi(d) + '</div>' +
+          '<div style="font-size:12px; color:#c2410c; margin-top:4px;">Đặc sản: ' + d.dacSan.join(', ') + '</div>' +
+          '</div>';
+      }).join('') +
+
+      '<h2 style="font-size:16px; margin:16px 0 8px; color:#7c3aed;">5. Gợi ý lưu trú</h2>' +
+      '<p style="font-size:13px;">' + lt.ten + ' — ' + lt.meo + '</p>';
+
+    document.body.appendChild(bao);
+
+    html2canvas(bao, { scale: 2, backgroundColor: '#ffffff' }).then(function (canvas) {
+      const jsPDFCtor = window.jspdf.jsPDF;
+      const pdf = new jsPDFCtor('p', 'mm', 'a4');
+      const rongTrang = 210 - 20;
+      const caoTrang = 297 - 20;
+      const caoAnh = (canvas.height * rongTrang) / canvas.width;
+      const ty = caoAnh > caoTrang ? caoTrang / caoAnh : 1;
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, 10, rongTrang * ty, caoAnh * ty);
+      pdf.save('bao-cao-chuyen-di.pdf');
+      document.body.removeChild(bao);
+      nutEl.disabled = false;
+      nutEl.textContent = 'Tải báo cáo PDF';
+    }).catch(function () {
+      document.body.removeChild(bao);
+      nutEl.disabled = false;
+      nutEl.textContent = 'Tải báo cáo PDF';
+    });
+  });
+
+  document.getElementById('nutXuatExcel').addEventListener('click', function () {
+    const du = layDuLieuBaoCao();
+    const k = du.k;
+    const wb = XLSX.utils.book_new();
+
+    const wsTongQuan = XLSX.utils.aoa_to_sheet([
+      ['Tổng quan', ''],
+      ['Ví tiền', k.viTien],
+      ['Chi phí ước tính', k.tongChiPhiDeXuat],
+      ['Chênh lệch', k.chenhLech],
+      ['Mùa', seasonData[state.mua].ten],
+      ['Phương tiện', phuongTienData[state.phuongTien].ten],
+      ['Kiểu lưu trú', luuTruData[state.luuTruKieu].ten],
+      ['Số ngày', k.soNgay],
+      ['Số người', k.soNguoi]
+    ]);
+    XLSX.utils.book_append_sheet(wb, wsTongQuan, 'Tong quan');
+
+    const wsNganSach = XLSX.utils.aoa_to_sheet([
+      ['Hạng mục', 'Số tiền'],
+      ['Di chuyển', Math.round(k.diChuyenCoBan)],
+      ['Lưu trú', Math.round(k.luuTruPhanBo)],
+      ['Ăn uống', Math.round(k.anUongPhanBo)],
+      ['Vui chơi / Mua sắm', Math.round(k.vuiChoiPhanBo)],
+      ['Tổng ngân sách', Math.round(k.tongNganSachThucTe)]
+    ]);
+    XLSX.utils.book_append_sheet(wb, wsNganSach, 'Ngan sach');
+
+    const wsDiaDiem = XLSX.utils.aoa_to_sheet(
+      [['Tên địa điểm', 'Nhóm ngân sách', 'Chi phí ước tính', 'Đặc sản']].concat(
+        du.diemDenBaoCao.map(function (d) { return [d.ten, nhomNganSach[d.nhom].nhan, khoangChiPhi(d), d.dacSan.join(', ')]; })
+      )
+    );
+    XLSX.utils.book_append_sheet(wb, wsDiaDiem, 'Goi y dia diem');
+
+    XLSX.writeFile(wb, 'bao-cao-chuyen-di.xlsx');
+  });
+
+  /* =========================================================
+     NHẬT KÝ THỰC TẾ + HUY HIỆU HOÀNG THƯỢNG BAN
+     ========================================================= */
+  function ngayHomNayISO() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  }
+  document.getElementById('ngayBatDauChuyenDi').value = ngayHomNayISO();
+
+  function tinhNgayThuMay() {
+    const k = ketQuaMoiNhat || tinh();
+    const ngayBDStr = document.getElementById('ngayBatDauChuyenDi').value;
+    if (!ngayBDStr) return { trangThai: 'chua_chon', ngayThuMay: null, soNgay: k.soNgay };
+    const ngayBD = new Date(ngayBDStr + 'T00:00:00');
+    const homNay = new Date();
+    homNay.setHours(0, 0, 0, 0);
+    const soNgayLech = Math.round((homNay - ngayBD) / 86400000);
+    const soNgay = k.soNgay;
+    if (soNgayLech < 0) return { trangThai: 'chua_bat_dau', ngayThuMay: null, soNgay: soNgay, conMayNgayNua: -soNgayLech };
+    if (soNgayLech >= soNgay) return { trangThai: 'ket_thuc', ngayThuMay: soNgay, soNgay: soNgay };
+    return { trangThai: 'dang_di', ngayThuMay: soNgayLech + 1, soNgay: soNgay };
+  }
+
+  function capNhatNgayHienTai() {
+    const tt = tinhNgayThuMay();
+    const chu = document.getElementById('ngayThuMayChu');
+    const mota = document.getElementById('ngayThuMayMoTa');
+    if (tt.trangThai === 'chua_chon') {
+      chu.textContent = '—';
+      mota.textContent = 'Chọn ngày bắt đầu để trẫm tính giúp sen.';
+    } else if (tt.trangThai === 'chua_bat_dau') {
+      chu.textContent = 'Chưa bắt đầu';
+      mota.textContent = 'Còn ' + tt.conMayNgayNua + ' ngày nữa là tới ngày đi, chuẩn bị hành lý thôi sen!';
+    } else if (tt.trangThai === 'ket_thuc') {
+      chu.textContent = 'Đã kết thúc';
+      mota.textContent = 'Chuyến đi ' + tt.soNgay + ' ngày đã xong xuôi, xem tổng kết bên dưới nhé!';
+    } else {
+      chu.textContent = 'Ngày ' + tt.ngayThuMay + ' / ' + tt.soNgay;
+      mota.textContent = 'Còn ' + (tt.soNgay - tt.ngayThuMay + 1) + ' ngày nữa là kết thúc chuyến đi.';
+    }
+    return tt;
+  }
+
+  function renderNhatKy() {
+    const k = ketQuaMoiNhat || tinh();
+    const tt = capNhatNgayHienTai();
+
+    const tbody = document.getElementById('bangNhatKyBody');
+    const rong = document.getElementById('chuaCoKhoanChi');
+    if (state.nhatKy.length === 0) {
+      tbody.innerHTML = '';
+      rong.style.display = 'block';
+    } else {
+      rong.style.display = 'none';
+      tbody.innerHTML = state.nhatKy.map(function (kc) {
+        return '<tr><td>Ngày ' + kc.ngay + '</td><td>' + kc.moTa + '</td><td class="so">' + formatTien(kc.soTien) + '</td>' +
+          '<td><button class="nut-xoa-khoan-chi" data-id="' + kc.id + '" type="button" aria-label="Xóa khoản chi">×</button></td></tr>';
+      }).join('');
+      tbody.querySelectorAll('.nut-xoa-khoan-chi').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          const id = Number(e.currentTarget.dataset.id);
+          state.nhatKy = state.nhatKy.filter(function (kc) { return kc.id !== id; });
+          renderNhatKy();
+        });
+      });
+    }
+
+    const tongDaChi = state.nhatKy.reduce(function (s, kc) { return s + kc.soTien; }, 0);
+
+    let ngayDaQua, ngayConLai;
+    if (tt.trangThai === 'dang_di') { ngayDaQua = tt.ngayThuMay - 1; ngayConLai = k.soNgay - tt.ngayThuMay + 1; }
+    else if (tt.trangThai === 'ket_thuc') { ngayDaQua = k.soNgay; ngayConLai = 1; }
+    else { ngayDaQua = 0; ngayConLai = k.soNgay; }
+
+    const conLaiLinhHoat = Math.max(k.nganSachLinhHoat - tongDaChi, 0);
+    const trungBinhNgayConLai = conLaiLinhHoat / ngayConLai;
+
+    document.getElementById('daChiThucTeHienThi').textContent = formatTien(tongDaChi);
+    document.getElementById('conLaiLinhHoatHienThi').textContent = formatTien(conLaiLinhHoat);
+    document.getElementById('trungBinhNgayConLaiHienThi').textContent = formatTien(trungBinhNgayConLai);
+
+    const a = chuanHoaUuTien();
+    const phanBoLai = [
+      { ten: 'Lưu trú', ty: a.luuTru, mau: '#0284c7' },
+      { ten: 'Ăn uống', ty: a.anUong, mau: '#16a34a' },
+      { ten: 'Vui chơi / Mua sắm', ty: a.vuiChoi, mau: '#7c3aed' }
+    ];
+    document.getElementById('bangPhanBoLaiBody').innerHTML = phanBoLai.map(function (p) {
+      return '<tr><td><span class="cham-mau" style="background:' + p.mau + '"></span>' + p.ten + '</td>' +
+        '<td class="so">' + Math.round(p.ty * 100) + '%</td>' +
+        '<td class="so">' + formatTien(conLaiLinhHoat * p.ty) + '</td></tr>';
+    }).join('');
+
+    const bong = document.getElementById('bongBongTieuLo');
+    const vanBan = document.getElementById('vanBanTieuLo');
+    if (ngayDaQua > 0) {
+      const dinhMucDenGioNay = (k.nganSachLinhHoat / k.soNgay) * ngayDaQua;
+      if (tongDaChi > dinhMucDenGioNay * 1.1) {
+        bong.style.display = 'flex';
+        vanBan.textContent = 'Sen ơi, tiêu lố rồi! Đến ngày ' + ngayDaQua + ' đáng lẽ chỉ nên tiêu khoảng ' + formatTien(dinhMucDenGioNay) + ', mà sen đã tiêu ' + formatTien(tongDaChi) + ' rồi. Những ngày còn lại phải tiết kiệm hơn xíu nha!';
+      } else {
+        bong.style.display = 'none';
+      }
+    } else {
+      bong.style.display = 'none';
+    }
+
+    kiemTraKetThucChuyenDi();
+  }
+
+  document.getElementById('ngayBatDauChuyenDi').addEventListener('input', function () {
+    state.daHienHuyHieu = false;
+    renderNhatKy();
+  });
+
+  dinhDangSoNhap(document.getElementById('soTienChiTieu'));
+
+  document.getElementById('nutThemChiTieu').addEventListener('click', function () {
+    const moTaEl = document.getElementById('moTaChiTieu');
+    const soTienEl = document.getElementById('soTienChiTieu');
+    const moTa = moTaEl.value.trim();
+    const soTien = Number(soTienEl.value.replace(/[^\d]/g, '') || 0);
+    if (!moTa || soTien <= 0) return;
+    const tt = tinhNgayThuMay();
+    const ngayGan = tt.trangThai === 'dang_di' ? tt.ngayThuMay : (tt.trangThai === 'ket_thuc' ? tt.soNgay : 1);
+    state.nhatKy.push({ id: state.dauChiTieuKeTiep++, moTa: moTa, soTien: soTien, ngay: ngayGan });
+    moTaEl.value = '';
+    soTienEl.value = '';
+    renderNhatKy();
+  });
+
+  function kiemTraKetThucChuyenDi() {
+    if (state.daHienHuyHieu) return;
+    const tt = tinhNgayThuMay();
+    if (tt.trangThai !== 'ket_thuc') return;
+    hienHuyHieu();
+  }
+
+  function taoConfetti(container) {
+    const mau = ['#f97316', '#ec4899', '#7c3aed', '#0284c7', '#16a34a', '#eab308'];
+    let html = '';
+    for (let i = 0; i < 28; i++) {
+      const trai = Math.round(Math.random() * 100);
+      const mauNay = mau[i % mau.length];
+      const treTiepDo = (Math.random() * 1.6).toFixed(2);
+      const thoiGian = (2.2 + Math.random() * 1.4).toFixed(2);
+      html += '<div class="manh-confetti" style="left:' + trai + '%; background:' + mauNay + '; animation-duration:' + thoiGian + 's; animation-delay:' + treTiepDo + 's;"></div>';
+    }
+    container.innerHTML = html;
+  }
+
+  function hienHuyHieu() {
+    state.daHienHuyHieu = true;
+    const k = ketQuaMoiNhat || tinh();
+    const tongDaChi = state.nhatKy.reduce(function (s, kc) { return s + kc.soTien; }, 0);
+    const dat = tongDaChi <= k.nganSachLinhHoat;
+
+    document.getElementById('huyHieuTieuDe').textContent = dat ? 'Chúc mừng sen đã hoàn thành chuyến đi!' : 'Chuyến đi đã kết thúc rồi!';
+    document.getElementById('huyHieuTen').textContent = dat ? 'Huy hiệu "Sen Kiên Cường" — Né chém giá thành công' : 'Chưa đạt huy hiệu lần này';
+    document.getElementById('huyHieuMoTa').textContent = dat
+      ? 'Sen đã chi tiêu trong đúng ngân sách tối ưu suốt cả chuyến đi. Trẫm rất tự hào về sen!'
+      : 'Sen tiêu hơi vượt ngân sách dự kiến một chút. Không sao, lần sau canh kỹ hơn là được, đi chơi vui là chính!';
+    document.getElementById('huyHieuNganSach').textContent = formatTien(k.nganSachLinhHoat);
+    document.getElementById('huyHieuDaChi').textContent = formatTien(tongDaChi);
+
+    const vongTron = document.querySelector('.huy-hieu-vong-tron');
+    vongTron.style.background = dat ? 'linear-gradient(135deg, #facc15, #f97316)' : 'linear-gradient(135deg, #cbd5e1, #94a3b8)';
+
+    const khoiConfetti = document.getElementById('khoiConfetti');
+    khoiConfetti.innerHTML = '';
+    if (dat) { taoConfetti(khoiConfetti); }
+
+    document.getElementById('huyHieuNen').style.display = 'flex';
+  }
+
+  document.getElementById('nutDongHuyHieu').addEventListener('click', function () {
+    document.getElementById('huyHieuNen').style.display = 'none';
+  });
+
+  document.getElementById('nutLuuAnhHuyHieu').addEventListener('click', function () {
+    const nut = this;
+    nut.disabled = true;
+    const chuGoc = nut.textContent;
+    nut.textContent = 'Đang tạo ảnh...';
+    html2canvas(document.getElementById('huyHieuThe'), { scale: 2, backgroundColor: '#ffffff' }).then(function (canvas) {
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'huy-hieu-hoang-thuong-ban.png';
+      a.click();
+      nut.disabled = false;
+      nut.textContent = chuGoc;
+    }).catch(function () {
+      nut.disabled = false;
+      nut.textContent = chuGoc;
+    });
+  });
+
+  document.getElementById('nutChiaSeHuyHieu').addEventListener('click', function () {
+    const nut = this;
+    nut.disabled = true;
+    const chuGoc = nut.textContent;
+    nut.textContent = 'Đang chuẩn bị...';
+    html2canvas(document.getElementById('huyHieuThe'), { scale: 2, backgroundColor: '#ffffff' }).then(function (canvas) {
+      canvas.toBlob(function (blob) {
+        const tep = new File([blob], 'huy-hieu-hoang-thuong-ban.png', { type: 'image/png' });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [tep] })) {
+          navigator.share({ files: [tep], title: 'Huy hiệu chuyến đi', text: 'Trẫm vừa trao huy hiệu cho sen!' }).catch(function () {});
+        } else {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'huy-hieu-hoang-thuong-ban.png';
+          a.click();
+        }
+        nut.disabled = false;
+        nut.textContent = chuGoc;
+      }, 'image/png');
+    }).catch(function () {
+      nut.disabled = false;
+      nut.textContent = chuGoc;
+    });
+  });
+
+  /* =========================================================
+     ONBOARDING TOUR — MASCOT MÈO MẬP
+     ========================================================= */
+  const buocTourChinh = [
+    { man: 'manTrangChu', target: null, text: 'Chào sen! Trẫm là Mèo Vi Mô đây. Để trẫm dắt sen lên kế hoạch chuyến đi chuẩn khoa học chỉ trong 30 giây nhé!', bam: false },
+    { man: 'manTrangChu', target: 'khoiViTien', text: 'Đầu tiên, cho trẫm biết sen đang có bao nhiêu tiền trong túi nào!', bam: false },
+    { man: 'manTrangChu', target: 'khoiMua', text: 'Chọn mùa sen dự định đi để trẫm canh giá vé giúp sen!', bam: false },
+    { man: 'manTrangChu', target: 'khoiPhuongTien', text: 'Sen thích di chuyển kiểu gì? Máy bay nhanh, xe khách tiết kiệm, hay phượt xe máy cho đã?', bam: false },
+    { man: 'manTrangChu', target: 'khoiSoThich', text: 'Sen mê gì nhất? Chọn thoải mái, chọn nhiều cũng được!', bam: false },
+    { man: 'manTrangChu', target: 'khoiLuuTru', text: 'Chọn kiểu ở mà sen ưng bụng!', bam: false },
+    { man: 'manTrangChu', target: 'khoiNgayNguoi', text: 'Cuối cùng, cho trẫm biết sen đi mấy ngày và đi cùng bao nhiêu người nữa nhé!', bam: false },
+    { man: 'manTrangChu', target: 'nutLenKeHoach', text: 'Xong xuôi thì bấm vào đây, để trẫm tính toán cho sen liền!', bam: true, hanhDongCuoi: true },
+    { man: 'manKetQua', target: 'theDuTien', text: 'Đây là câu trả lời đủ hay thiếu tiền, tính thẳng theo lựa chọn của sen luôn đó!', bam: false },
+    { man: 'manKetQua', target: 'theMua', text: 'Mùa sen chọn có cảnh báo và mẹo đặt vé riêng, đọc kỹ kẻo lỡ chuyến nha!', bam: false },
+    { man: 'manKetQua', target: 'theNganSach', text: 'Đây là chỗ tiền được chia cho từng khoản — tò mò công thức thì bấm nút phân tích khoa học phía trên nhé!', bam: false },
+    { man: 'manKetQua', target: 'khoiGoiYDiaDiem', text: 'Danh sách điểm đến kèm đặc sản đây, có cả nút xem Google Maps và chọn điểm đến trước luôn nè!', bam: false },
+    { man: 'manKetQua', target: 'theLuuTru', text: 'Gợi ý chỗ ở theo đúng kiểu sen thích, kèm mẹo tránh bị hớ khi đặt phòng.', bam: false },
+    { man: 'manKetQua', target: 'nutXuatPDF', text: 'Xong rồi đó! Bấm vào đây để xuất file PDF thôi!', bam: false }
+  ];
+  const buocPhuNhacBai = [
+    { man: 'manKetQua', target: 'nutXemPhanTich', text: 'Ở màn này sen có thể bấm nút này để xem công thức khoa học đứng sau các con số, hoặc cuộn xuống bấm xuất PDF khi đã ưng ý nhé!' }
+  ];
+  const tatCaBuocChoNhacBai = buocPhuNhacBai.concat(buocTourChinh);
+
+  let buocHienTai = 0;
+  let dangHuongDan = false;
+  let dangNhacBai = false;
+
+  const elChan = document.getElementById('tourChan');
+  const elVongSang = document.getElementById('tourVongSang');
+  const elDiemNong = document.getElementById('tourDiemNong');
+  const elMuiTen = document.getElementById('tourMuiTen');
+  const elHopMeo = document.getElementById('tourHopMeo');
+  const elVanBan = document.getElementById('tourVanBan');
+  const elNutBoQua = document.getElementById('tourNutBoQua');
+  const elNutTiep = document.getElementById('tourNutTiep');
+  const elNutDaHieu = document.getElementById('tourNutDaHieu');
+  const elNgheThuong = document.getElementById('ngheThuong');
+  const elMenuNgheThuong = document.getElementById('menuNgheThuong');
+
+  let khoaThaoTacHuongDan = false;
+  function chanBamKep(hanDong) {
+    return function (e) {
+      if (khoaThaoTacHuongDan) return;
+      khoaThaoTacHuongDan = true;
+      setTimeout(function () { khoaThaoTacHuongDan = false; }, 400);
+      hanDong(e);
+    };
+  }
+
+  function batDauHuongDan() {
+    elMenuNgheThuong.style.display = 'none';
+    elNgheThuong.style.display = 'none';
+    dangNhacBai = false;
+    dangHuongDan = true;
+    elChan.style.display = 'block';
+    elHopMeo.style.display = 'flex';
+    elNutTiep.style.display = '';
+    elNutBoQua.style.display = '';
+    elNutDaHieu.style.display = 'none';
+    hienThiBuoc(0);
+  }
+
+  function anTatCaTour() {
+    elChan.style.display = 'none';
+    elVongSang.style.display = 'none';
+    elDiemNong.style.display = 'none';
+    elMuiTen.style.display = 'none';
+    elHopMeo.style.display = 'none';
+  }
+
+  function hienMeoThuNho() { elNgheThuong.style.display = 'flex'; }
+
+  function ketThucHuongDan() {
+    dangHuongDan = false;
+    anTatCaTour();
+    try { localStorage.setItem('daXemHuongDanV5', '1'); } catch (loi) {}
+    hienMeoThuNho();
+  }
+
+  function diTiepBuoc() {
+    const bHienTai = buocTourChinh[buocHienTai];
+    if (bHienTai && bHienTai.hanhDongCuoi) { document.getElementById('nutLenKeHoach').click(); }
+    if (buocHienTai >= buocTourChinh.length - 1) { ketThucHuongDan(); return; }
+    hienThiBuoc(buocHienTai + 1);
+  }
+
+  function hienThiBuoc(buoc) {
+    buocHienTai = buoc;
+    const b = buocTourChinh[buoc];
+    elVanBan.textContent = b.text;
+    elNutTiep.textContent = (buoc === buocTourChinh.length - 1) ? 'Hoàn thành' : 'Tiếp theo →';
+
+    const manDangHien = document.querySelector('.man-hinh.dang-hien');
+    if (b.man && (!manDangHien || manDangHien.id !== b.man)) { moToManHinh(b.man); }
+
+    setTimeout(function () {
+      if (b.target) {
+        const dich = document.getElementById(b.target);
+        if (dich && dich.scrollIntoView) { try { dich.scrollIntoView({ block: 'center' }); } catch (loi) {} }
+      }
+      setTimeout(function () {
+        veLaiSpotlight(b);
+        setTimeout(function () { if (buocHienTai === buoc) veLaiSpotlight(b); }, 320);
+      }, 60);
+    }, 20);
+  }
+
+  function veLaiSpotlight(b) {
+    if (!b || (!dangHuongDan && !dangNhacBai)) return;
+
+    if (!b.target) {
+      elVongSang.style.display = 'none';
+      elDiemNong.style.display = 'none';
+      elMuiTen.style.display = 'none';
+      elHopMeo.style.left = '50%';
+      elHopMeo.style.top = '';
+      elHopMeo.style.bottom = '40px';
+      elHopMeo.style.transform = 'translateX(-50%)';
+      return;
+    }
+
+    const dich = document.getElementById(b.target);
+    if (!dich) return;
+    const hcn = dich.getBoundingClientRect();
+    const dem = 10;
+
+    elVongSang.style.display = 'block';
+    elVongSang.style.top = (hcn.top - dem) + 'px';
+    elVongSang.style.left = (hcn.left - dem) + 'px';
+    elVongSang.style.width = (hcn.width + dem * 2) + 'px';
+    elVongSang.style.height = (hcn.height + dem * 2) + 'px';
+
+    if (b.bam) {
+      elDiemNong.style.display = 'block';
+      elDiemNong.style.top = (hcn.top - dem) + 'px';
+      elDiemNong.style.left = (hcn.left - dem) + 'px';
+      elDiemNong.style.width = (hcn.width + dem * 2) + 'px';
+      elDiemNong.style.height = (hcn.height + dem * 2) + 'px';
+      elDiemNong.onclick = chanBamKep(diTiepBuoc);
+    } else {
+      elDiemNong.style.display = 'none';
+      elDiemNong.onclick = null;
+    }
+
+    elMuiTen.style.display = 'block';
+    elMuiTen.style.top = (hcn.top - 46) + 'px';
+    elMuiTen.style.left = (hcn.left + hcn.width / 2 - 14) + 'px';
+
+    elHopMeo.style.transform = 'none';
+    let hopTop = hcn.bottom + 16;
+    let hopLeft = hcn.left;
+    if (hopLeft + 270 > window.innerWidth) { hopLeft = window.innerWidth - 280; }
+    if (hopTop + 180 > window.innerHeight) { hopTop = Math.max(10, hcn.top - 190); }
+    elHopMeo.style.top = hopTop + 'px';
+    elHopMeo.style.left = Math.max(10, hopLeft) + 'px';
+    elHopMeo.style.bottom = '';
+  }
+
+  function nhacBaiTaiCho() {
+    const manDangHien = document.querySelector('.man-hinh.dang-hien');
+    const manId = manDangHien ? manDangHien.id : 'manTrangChu';
+    let idx = -1;
+    tatCaBuocChoNhacBai.forEach(function (s, i) { if (idx === -1 && s.man === manId && s.target) idx = i; });
+    if (idx === -1) { tatCaBuocChoNhacBai.forEach(function (s, i) { if (idx === -1 && s.man === manId) idx = i; }); }
+    if (idx === -1) idx = 0;
+
+    dangNhacBai = true;
+    dangHuongDan = false;
+    elChan.style.display = 'block';
+    elHopMeo.style.display = 'flex';
+    elNutTiep.style.display = 'none';
+    elNutBoQua.style.display = 'none';
+    elNutDaHieu.style.display = 'inline-flex';
+
+    const b = tatCaBuocChoNhacBai[idx];
+    elVanBan.textContent = b.text;
+    setTimeout(function () {
+      if (b.target) {
+        const dich = document.getElementById(b.target);
+        if (dich && dich.scrollIntoView) { try { dich.scrollIntoView({ block: 'center' }); } catch (loi) {} }
+      }
+      setTimeout(function () {
+        veLaiSpotlight(b);
+        setTimeout(function () { if (dangNhacBai) veLaiSpotlight(b); }, 320);
+      }, 60);
+    }, 20);
+  }
+
+  function dongNhacBai() {
+    dangNhacBai = false;
+    anTatCaTour();
+    elNutTiep.style.display = '';
+    elNutBoQua.style.display = '';
+    elNutDaHieu.style.display = 'none';
+    hienMeoThuNho();
+  }
+
+  elNutBoQua.addEventListener('click', chanBamKep(ketThucHuongDan));
+  elNutTiep.addEventListener('click', chanBamKep(diTiepBuoc));
+  elNutDaHieu.addEventListener('click', chanBamKep(dongNhacBai));
+
+  elNgheThuong.addEventListener('click', chanBamKep(function () {
+    elMenuNgheThuong.style.display = (elMenuNgheThuong.style.display === 'flex') ? 'none' : 'flex';
+  }));
+  document.getElementById('nutXemLaiTuDau').addEventListener('click', chanBamKep(function () {
+    elMenuNgheThuong.style.display = 'none';
+    batDauHuongDan();
+  }));
+  document.getElementById('nutNhacBaiTaiCho').addEventListener('click', chanBamKep(function () {
+    elMenuNgheThuong.style.display = 'none';
+    elNgheThuong.style.display = 'none';
+    nhacBaiTaiCho();
+  }));
+
+  window.addEventListener('resize', function () {
+    if (dangHuongDan) veLaiSpotlight(buocTourChinh[buocHienTai]);
+    if (dangNhacBai) nhacBaiTaiChoLamMoi();
+  });
+  window.addEventListener('scroll', function () {
+    if (dangHuongDan) veLaiSpotlight(buocTourChinh[buocHienTai]);
+  }, { passive: true, capture: true });
+
+  function nhacBaiTaiChoLamMoi() {
+    const manDangHien = document.querySelector('.man-hinh.dang-hien');
+    const manId = manDangHien ? manDangHien.id : 'manTrangChu';
+    const b = tatCaBuocChoNhacBai.filter(function (s) { return s.man === manId; })[0];
+    if (b) veLaiSpotlight(b);
+  }
+
+  /* =========================================================
+     KHỞI TẠO
+     ========================================================= */
+  let daXem = false;
+  try { daXem = !!localStorage.getItem('daXemHuongDanV5'); } catch (loi) {}
+  if (!daXem) { setTimeout(batDauHuongDan, 600); } else { hienMeoThuNho(); }
+
+})();
+</script>
+
+</body>
+</html>
