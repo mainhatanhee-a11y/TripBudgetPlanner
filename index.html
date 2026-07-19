@@ -296,6 +296,11 @@
     font-family: inherit; font-weight: 600; color: var(--chu-chinh); background: #fffdf9;
   }
   .khoi-nhap-chi-tieu input:focus { outline: none; border-color: var(--xanh-bien); background: #fff; }
+  .khoi-nhap-chi-tieu select {
+    border: 2px solid var(--vien); border-radius: 12px; padding: 10px 12px; font-size: 14px;
+    font-family: inherit; font-weight: 600; color: var(--chu-chinh); background: #fffdf9;
+  }
+  .khoi-nhap-chi-tieu select:focus { outline: none; border-color: var(--xanh-bien); background: #fff; }
   .nut-them-chi-tieu {
     border: none; background: var(--xanh-bien); color: #fff; padding: 11px 18px; border-radius: 12px;
     font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
@@ -347,6 +352,27 @@
   .nut-dong-huy-hieu { background: #f0ece0; color: var(--chu-phu); }
   .manh-confetti { position: absolute; top: -10px; width: 8px; height: 14px; opacity: 0.9; animation: roi-confetti linear infinite; }
   @keyframes roi-confetti { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(520px) rotate(540deg); } }
+
+  /* ---------- Popup chặn lỗi nhập liệu ---------- */
+  .canh-bao-chan-nen { position: fixed; inset: 0; background: rgba(22,16,10,0.6); z-index: 10025; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .canh-bao-chan-the {
+    background: #fff; border-radius: 20px; padding: 1.8rem 1.6rem; max-width: 360px; width: 100%; text-align: center;
+    box-shadow: 0 26px 54px rgba(0,0,0,0.32);
+  }
+  .canh-bao-chan-the svg { width: 74px; height: 74px; margin-bottom: 10px; }
+  .canh-bao-chan-the p { font-size: 14.5px; font-weight: 700; color: #b91c1c; line-height: 1.6; margin: 0 0 16px; }
+  .canh-bao-chan-the button {
+    border: none; background: var(--do); color: #fff; padding: 10px 22px; border-radius: 12px;
+    font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+
+  /* ---------- Nút lập kịch bản mới ---------- */
+  .khoi-kich-ban-moi { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .nut-kich-ban-moi {
+    border: 2px solid var(--xanh-bien); background: #fff; color: var(--xanh-bien);
+    padding: 11px 20px; border-radius: 14px; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer;
+  }
+  .nut-kich-ban-moi:hover { background: #eff6ff; }
 </style>
 </head>
 <body>
@@ -383,6 +409,7 @@
           <button class="the-lua-chon" data-phuong-tien="xe_khach" type="button">Xe khách giường nằm</button>
           <button class="the-lua-chon" data-phuong-tien="xe_may" type="button">Xe máy phượt</button>
         </div>
+        <div class="thong-bao canh-bao" id="canhBaoViTienKhongDu" style="display:none; margin-top:10px;"></div>
       </div>
 
       <div class="buoc-form" id="khoiSoThich">
@@ -495,6 +522,16 @@
         <div style="position:relative; height:220px;">
           <canvas id="bieuDoPhanBo" role="img" aria-label="Biểu đồ tròn phân bổ ngân sách chuyến đi theo khoản chi">Phân bổ ngân sách theo di chuyển, lưu trú, ăn uống, vui chơi mua sắm.</canvas>
         </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="khoi-kich-ban-moi">
+        <div>
+          <h3 class="tieu-de-the" style="margin-bottom:2px;">Muốn thử phương án khác?</h3>
+          <p class="mo-ta-the" style="margin-bottom:0;">Giữ nguyên ví tiền, đổi phương tiện / sở thích / lưu trú để so sánh cách phân bổ.</p>
+        </div>
+        <button class="nut-kich-ban-moi" id="nutKichBanMoi" type="button">🔄 Lập kịch bản mới</button>
       </div>
     </section>
 
@@ -615,6 +652,15 @@
       </div>
 
       <div class="khoi-nhap-chi-tieu">
+        <div class="truong-nho" style="max-width: 170px;">
+          <label for="hangMucChiTieu">Hạng mục</label>
+          <select id="hangMucChiTieu">
+            <option value="Di chuyển">Di chuyển</option>
+            <option value="Lưu trú">Lưu trú</option>
+            <option value="Ăn uống" selected>Ăn uống</option>
+            <option value="Vui chơi / Mua sắm">Vui chơi / Mua sắm</option>
+          </select>
+        </div>
         <div class="truong-nho">
           <label for="moTaChiTieu">Nội dung</label>
           <input type="text" id="moTaChiTieu" placeholder="Ăn hải sản">
@@ -627,7 +673,7 @@
       </div>
 
       <table class="bang-nhat-ky">
-        <thead><tr><th>Ngày</th><th>Nội dung</th><th style="text-align:right">Số tiền</th><th></th></tr></thead>
+        <thead><tr><th>Ngày</th><th>Hạng mục</th><th>Nội dung</th><th style="text-align:right">Số tiền</th><th></th></tr></thead>
         <tbody id="bangNhatKyBody"></tbody>
       </table>
       <p id="chuaCoKhoanChi" style="font-size:13px; color:var(--chu-phu);">Chưa có khoản chi nào được ghi lại.</p>
@@ -766,10 +812,38 @@
   </div>
 </div>
 
+<!-- ============ Popup chặn lỗi nhập liệu ============ -->
+<div class="canh-bao-chan-nen" id="canhBaoChanNen">
+  <div class="canh-bao-chan-the">
+    <svg viewBox="0 0 110 100" fill="none">
+      <ellipse cx="55" cy="76" rx="33" ry="21" fill="#fff7ec"/>
+      <ellipse cx="29" cy="18" rx="9" ry="21" transform="rotate(-26 29 18)" fill="#f97316"/>
+      <ellipse cx="81" cy="18" rx="9" ry="21" transform="rotate(26 81 18)" fill="#f97316"/>
+      <ellipse cx="30" cy="21" rx="4.5" ry="13" transform="rotate(-26 30 21)" fill="#ffedd5"/>
+      <ellipse cx="80" cy="21" rx="4.5" ry="13" transform="rotate(26 80 21)" fill="#ffedd5"/>
+      <circle cx="55" cy="53" r="32" fill="#fff7ec"/>
+      <rect x="44" y="11" width="22" height="5" rx="2.5" fill="#eab308"/>
+      <circle cx="47" cy="10" r="4" fill="#facc15"/>
+      <circle cx="55" cy="7" r="4.5" fill="#facc15"/>
+      <circle cx="63" cy="10" r="4" fill="#facc15"/>
+      <ellipse cx="33" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+      <ellipse cx="77" cy="61" rx="5.5" ry="3.6" fill="#fecdd3"/>
+      <circle cx="45.5" cy="51" r="6.4" fill="#16233a"/>
+      <circle cx="64.5" cy="51" r="6.4" fill="#16233a"/>
+      <circle cx="43.3" cy="48.2" r="2.1" fill="#fff"/>
+      <circle cx="62.3" cy="48.2" r="2.1" fill="#fff"/>
+      <path d="M55 59 Q52 62.5 55 65 Q58 62.5 55 59 Z" fill="#fb7185"/>
+      <path d="M50 68 Q55 64 60 68" stroke="#16233a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </svg>
+    <p id="canhBaoChanVanBan"></p>
+    <button id="nutDongCanhBaoChan" type="button">Đã hiểu, để sen sửa lại</button>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 
 <script>
 (function () {
@@ -957,7 +1031,7 @@
   /* =========================================================
      CHỌN CÁC Ô LỰA CHỌN ĐƠN / ĐA
      ========================================================= */
-  function thietLapNhomChonDon(idContainer, thuocTinh, keyState) {
+  function thietLapNhomChonDon(idContainer, thuocTinh, keyState, khiDoi) {
     const cont = document.getElementById(idContainer);
     cont.querySelectorAll('.the-lua-chon').forEach(function (btn) {
       if (btn.dataset[thuocTinh] === state[keyState]) btn.classList.add('dang-chon');
@@ -965,11 +1039,12 @@
         state[keyState] = btn.dataset[thuocTinh];
         cont.querySelectorAll('.the-lua-chon').forEach(function (b) { b.classList.remove('dang-chon'); });
         btn.classList.add('dang-chon');
+        if (khiDoi) khiDoi();
       });
     });
   }
-  thietLapNhomChonDon('chonMua', 'mua', 'mua');
-  thietLapNhomChonDon('chonPhuongTien', 'phuongTien', 'phuongTien');
+  thietLapNhomChonDon('chonMua', 'mua', 'mua', function () { kiemTraViTienDuDiChuyen(); });
+  thietLapNhomChonDon('chonPhuongTien', 'phuongTien', 'phuongTien', function () { kiemTraViTienDuDiChuyen(); });
   thietLapNhomChonDon('chonLuuTru', 'luuTru', 'luuTruKieu');
 
   document.getElementById('chonSoThich').querySelectorAll('button').forEach(function (btn) {
@@ -1376,7 +1451,47 @@
     moToManHinh('manKetQua');
     setTimeout(renderKetQua, 20);
   }
-  document.getElementById('nutLenKeHoach').addEventListener('click', lenKeHoach);
+
+  /* =========================================================
+     KIỂM TRA & CHẶN LỖI NHẬP LIỆU
+     ========================================================= */
+  function hienCanhBaoChan(vanBan) {
+    document.getElementById('canhBaoChanVanBan').textContent = vanBan;
+    document.getElementById('canhBaoChanNen').style.display = 'flex';
+  }
+  document.getElementById('nutDongCanhBaoChan').addEventListener('click', function () {
+    document.getElementById('canhBaoChanNen').style.display = 'none';
+    document.getElementById('viTien').focus();
+  });
+
+  function kiemTraViTienDuDiChuyen() {
+    const elBanner = document.getElementById('canhBaoViTienKhongDu');
+    const viTien = layGiaTri('viTien');
+    if (viTien <= 0) { elBanner.style.display = 'none'; return; }
+    const chiPhiDiChuyen = phuongTienData[state.phuongTien].coBan * seasonData[state.mua].heSo[state.phuongTien];
+    if (viTien < chiPhiDiChuyen) {
+      elBanner.style.display = 'block';
+      elBanner.textContent = 'Ngân khố không đủ mua vé ' + phuongTienData[state.phuongTien].ten.toLowerCase() + ' mùa này đâu sen ơi (cần khoảng ' + formatTien(chiPhiDiChuyen) + ' mỗi người), hãy tăng ngân sách hoặc đổi sang đi Xe khách / Xe máy nhé!';
+    } else {
+      elBanner.style.display = 'none';
+    }
+  }
+  document.getElementById('viTien').addEventListener('input', kiemTraViTienDuDiChuyen);
+
+  document.getElementById('nutLenKeHoach').addEventListener('click', function () {
+    const raw = document.getElementById('viTien').value;
+    const viTien = Number(String(raw).replace(/[^\d]/g, '') || 0);
+    if (!raw || viTien <= 0) {
+      hienCanhBaoChan('Vui lòng nhập lại đúng định dạng là số và là số dương nhé, sen thân mến!');
+      return;
+    }
+    lenKeHoach();
+  });
+
+  document.getElementById('nutKichBanMoi').addEventListener('click', function () {
+    moToManHinh('manTrangChu');
+    kiemTraViTienDuDiChuyen();
+  });
 
   /* =========================================================
      XUẤT BÁO CÁO
@@ -1460,42 +1575,168 @@
     });
   });
 
+  /* =========================================================
+     XUẤT EXCEL CHUYÊN NGHIỆP (SheetJS + xlsx-js-style)
+     ========================================================= */
+  const VIEN_MONG = {
+    top: { style: 'thin', color: { rgb: 'D8D2C2' } },
+    bottom: { style: 'thin', color: { rgb: 'D8D2C2' } },
+    left: { style: 'thin', color: { rgb: 'D8D2C2' } },
+    right: { style: 'thin', color: { rgb: 'D8D2C2' } }
+  };
+  const DINH_DANG_TIEN = '#,##0" đ"';
+  const DINH_DANG_PHAN_TRAM = '0%';
+
+  function kieuOBang(nen, chuDam, mauChu, canGiua) {
+    return {
+      font: { bold: !!chuDam, color: { rgb: mauChu || '16233A' }, sz: 11 },
+      fill: { fgColor: { rgb: nen } },
+      alignment: { vertical: 'center', horizontal: canGiua ? 'center' : 'left', wrapText: true },
+      border: VIEN_MONG
+    };
+  }
+
+  // Tính độ rộng cột tự động dựa trên chuỗi dài nhất trong từng cột, tránh chữ tràn hoặc hiện lỗi '###'.
+  function tinhDoRongCot(bangDuLieu, doRongToiDa) {
+    const soCot = bangDuLieu.reduce(function (max, hang) { return Math.max(max, hang.length); }, 0);
+    const ketQua = [];
+    for (let c = 0; c < soCot; c++) {
+      let daiNhat = 8;
+      bangDuLieu.forEach(function (hang) {
+        const gt = hang[c];
+        if (gt === undefined || gt === null || gt === '') return;
+        daiNhat = Math.max(daiNhat, String(gt).length);
+      });
+      ketQua.push({ wch: Math.min(daiNhat + 3, doRongToiDa || 60) });
+    }
+    return ketQua;
+  }
+
+  function ganKieu(ws, diaChi, kieu) {
+    if (!ws[diaChi]) ws[diaChi] = { t: 's', v: '' };
+    ws[diaChi].s = kieu;
+  }
+  function ganSoTien(ws, diaChi, kieu) {
+    if (!ws[diaChi]) return;
+    ws[diaChi].t = 'n';
+    ws[diaChi].z = DINH_DANG_TIEN;
+    ws[diaChi].s = Object.assign({}, kieu, { numFmt: DINH_DANG_TIEN, alignment: { vertical: 'center', horizontal: 'right' } });
+  }
+  function ganPhanTram(ws, diaChi, kieu) {
+    if (!ws[diaChi] || typeof ws[diaChi].v !== 'number') { ganKieu(ws, diaChi, kieu); return; }
+    ws[diaChi].t = 'n';
+    ws[diaChi].z = DINH_DANG_PHAN_TRAM;
+    ws[diaChi].s = Object.assign({}, kieu, { numFmt: DINH_DANG_PHAN_TRAM, alignment: { vertical: 'center', horizontal: 'center' } });
+  }
+  // Ước lượng chiều cao hàng dựa trên số ký tự dài nhất trong hàng, để chữ dài không bị đè lên nhau khi wrapText.
+  function uocLuongChieuCaoHang(vanBan, kyTuMoiDong, hpxToiThieu) {
+    const doDai = String(vanBan || '').length;
+    const soDong = Math.max(1, Math.ceil(doDai / kyTuMoiDong));
+    return Math.max(hpxToiThieu || 20, soDong * 15 + 10);
+  }
+  function tongChiTheoHangMuc(ten) {
+    return state.nhatKy
+      .filter(function (kc) { return (kc.hangMuc || 'Vui chơi / Mua sắm') === ten; })
+      .reduce(function (s, kc) { return s + kc.soTien; }, 0);
+  }
+
   document.getElementById('nutXuatExcel').addEventListener('click', function () {
     const du = layDuLieuBaoCao();
     const k = du.k;
+    const s = seasonData[state.mua];
+    const lt = luuTruData[state.luuTruKieu];
+    const a = chuanHoaUuTien();
+    const diaDiemDauTien = du.diemDenBaoCao[0];
+    const meoVuiChoi = (meoBanDiaData.filter(function (m) { return diaDiemDauTien && m.diaDiem === diaDiemDauTien.ten; })[0] || {}).noiDung
+      || 'Ưu tiên đặt trước các hoạt động nổi bật để có giá tốt và không bị hết chỗ.';
+
+    // Chi tiêu thực tế theo từng hạng mục, lấy trực tiếp từ Nhật ký chi tiêu người dùng đã nhập.
+    const thucChiDiChuyen = tongChiTheoHangMuc('Di chuyển');
+    const thucChiLuuTru = tongChiTheoHangMuc('Lưu trú');
+    const thucChiAnUong = tongChiTheoHangMuc('Ăn uống');
+    const thucChiVuiChoi = tongChiTheoHangMuc('Vui chơi / Mua sắm');
+    const tongThucChi = thucChiDiChuyen + thucChiLuuTru + thucChiAnUong + thucChiVuiChoi;
+    const tongChenhLech = Math.round(k.tongNganSachThucTe) - tongThucChi;
+    const tyLeDiChuyen = k.tongNganSachThucTe > 0 ? Math.round((k.diChuyenCoBan / k.tongNganSachThucTe) * 100) : 0;
+
+    // ---------- SHEET 1: KẾ HOẠCH DỰ TOÁN TÀI CHÍNH DU LỊCH ----------
+    const meoDiChuyen = s.meo;
+    const meoLuuTru = lt.meo;
+    const meoAnUong = diaDiemDauTien ? diaDiemDauTien.meoAn : 'Ưu tiên quán ăn có nhiều người bản địa để đúng vị và đúng giá.';
+    const hang = [
+      ['KẾ HOẠCH DỰ TOÁN TÀI CHÍNH DU LỊCH', '', '', '', '', ''],
+      ['Tổng ngân sách dự kiến', Math.round(k.tongNganSachThucTe), 'Mùa đi', s.ten, 'Kiểu lưu trú / Phân khúc', lt.ten],
+      ['Ví tiền hiện có', Math.round(k.viTien), 'Đã chi thực tế (nhật ký)', tongThucChi, 'Còn lại / Chênh lệch', tongChenhLech],
+      ['Hạng mục chi phí', 'Tỷ trọng tối ưu (%)', 'Số tiền phân bổ (VND)', 'Chi tiêu thực tế (VND)', 'Còn lại / Chênh lệch (VND)', 'Gợi ý / Mẹo bản địa'],
+      ['Di chuyển (' + phuongTienData[state.phuongTien].ten + ')', tyLeDiChuyen + '% (Cố định)', Math.round(k.diChuyenCoBan), thucChiDiChuyen, Math.round(k.diChuyenCoBan) - thucChiDiChuyen, meoDiChuyen],
+      ['Lưu trú', a.luuTru, Math.round(k.luuTruPhanBo), thucChiLuuTru, Math.round(k.luuTruPhanBo) - thucChiLuuTru, meoLuuTru],
+      ['Ăn uống', a.anUong, Math.round(k.anUongPhanBo), thucChiAnUong, Math.round(k.anUongPhanBo) - thucChiAnUong, meoAnUong],
+      ['Vui chơi / Mua sắm', a.vuiChoi, Math.round(k.vuiChoiPhanBo), thucChiVuiChoi, Math.round(k.vuiChoiPhanBo) - thucChiVuiChoi, meoVuiChoi],
+      ['TỔNG CỘNG', '—', Math.round(k.tongNganSachThucTe), tongThucChi, tongChenhLech, 'Đối chiếu với ví tiền ban đầu: ' + Math.round(k.viTien).toLocaleString('vi-VN') + ' đ']
+    ];
+    const ws1 = XLSX.utils.aoa_to_sheet(hang);
+
+    ws1['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+    ws1['!cols'] = tinhDoRongCot(hang, 45);
+    ws1['!rows'] = [
+      { hpx: 30 }, { hpx: 22 }, { hpx: 22 }, { hpx: 32 },
+      { hpx: uocLuongChieuCaoHang(meoDiChuyen, 45, 34) },
+      { hpx: uocLuongChieuCaoHang(meoLuuTru, 45, 34) },
+      { hpx: uocLuongChieuCaoHang(meoAnUong, 45, 34) },
+      { hpx: uocLuongChieuCaoHang(meoVuiChoi, 45, 34) },
+      { hpx: 26 }
+    ];
+
+    ['A1', 'B1', 'C1', 'D1', 'E1', 'F1'].forEach(function (dc) { ganKieu(ws1, dc, kieuOBang('7C3AED', true, 'FFFFFF', true)); });
+
+    ['A2', 'C2', 'E2', 'A3', 'C3', 'E3'].forEach(function (dc) { ganKieu(ws1, dc, kieuOBang('EDE9FE', true, '4C1D95')); });
+    ganSoTien(ws1, 'B2', kieuOBang('FFFFFF', true, '16233A'));
+    ganKieu(ws1, 'D2', kieuOBang('FFFFFF', true, '16233A'));
+    ganKieu(ws1, 'F2', kieuOBang('FFFFFF', true, '16233A'));
+    ganSoTien(ws1, 'B3', kieuOBang('FFFFFF', true, '16233A'));
+    ganSoTien(ws1, 'D3', kieuOBang('FFFFFF', true, '16233A'));
+    ganSoTien(ws1, 'F3', kieuOBang('FFFFFF', true, tongChenhLech >= 0 ? '15803D' : 'B91C1C'));
+
+    ['A4', 'B4', 'C4', 'D4', 'E4', 'F4'].forEach(function (dc) { ganKieu(ws1, dc, kieuOBang('0284C7', true, 'FFFFFF', true)); });
+
+    [5, 6, 7, 8].forEach(function (soHang, idx) {
+      const nen = idx % 2 === 0 ? 'FFFFFF' : 'F7F4EC';
+      ganKieu(ws1, 'A' + soHang, kieuOBang(nen, true, '16233A'));
+      if (soHang === 5) { ganKieu(ws1, 'B' + soHang, kieuOBang(nen, false, '5B6B83', true)); }
+      else { ganPhanTram(ws1, 'B' + soHang, kieuOBang(nen, false, '16233A')); }
+      ganSoTien(ws1, 'C' + soHang, kieuOBang(nen, true, '0284C7'));
+      ganSoTien(ws1, 'D' + soHang, kieuOBang(nen, false, '5B6B83'));
+      const cl = ws1['D' + soHang] ? (Number(ws1['C' + soHang].v) - Number(ws1['D' + soHang].v)) : 0;
+      ganSoTien(ws1, 'E' + soHang, kieuOBang(nen, true, cl >= 0 ? '15803D' : 'B91C1C'));
+      ganKieu(ws1, 'F' + soHang, kieuOBang(nen, false, '5B6B83'));
+    });
+
+    ['A9', 'B9'].forEach(function (dc) { ganKieu(ws1, dc, kieuOBang('FEF3C7', true, '92400E')); });
+    ganSoTien(ws1, 'C9', kieuOBang('FEF3C7', true, '92400E'));
+    ganSoTien(ws1, 'D9', kieuOBang('FEF3C7', true, '92400E'));
+    ganSoTien(ws1, 'E9', kieuOBang('FEF3C7', true, tongChenhLech >= 0 ? '15803D' : 'B91C1C'));
+    ganKieu(ws1, 'F9', kieuOBang('FEF3C7', false, '92400E'));
+
     const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws1, 'Ke hoach tai chinh');
 
-    const wsTongQuan = XLSX.utils.aoa_to_sheet([
-      ['Tổng quan', ''],
-      ['Ví tiền', k.viTien],
-      ['Chi phí ước tính', k.tongChiPhiDeXuat],
-      ['Chênh lệch', k.chenhLech],
-      ['Mùa', seasonData[state.mua].ten],
-      ['Phương tiện', phuongTienData[state.phuongTien].ten],
-      ['Kiểu lưu trú', luuTruData[state.luuTruKieu].ten],
-      ['Số ngày', k.soNgay],
-      ['Số người', k.soNguoi]
-    ]);
-    XLSX.utils.book_append_sheet(wb, wsTongQuan, 'Tong quan');
-
-    const wsNganSach = XLSX.utils.aoa_to_sheet([
-      ['Hạng mục', 'Số tiền'],
-      ['Di chuyển', Math.round(k.diChuyenCoBan)],
-      ['Lưu trú', Math.round(k.luuTruPhanBo)],
-      ['Ăn uống', Math.round(k.anUongPhanBo)],
-      ['Vui chơi / Mua sắm', Math.round(k.vuiChoiPhanBo)],
-      ['Tổng ngân sách', Math.round(k.tongNganSachThucTe)]
-    ]);
-    XLSX.utils.book_append_sheet(wb, wsNganSach, 'Ngan sach');
-
-    const wsDiaDiem = XLSX.utils.aoa_to_sheet(
-      [['Tên địa điểm', 'Nhóm ngân sách', 'Chi phí ước tính', 'Đặc sản']].concat(
-        du.diemDenBaoCao.map(function (d) { return [d.ten, nhomNganSach[d.nhom].nhan, khoangChiPhi(d), d.dacSan.join(', ')]; })
-      )
+    // ---------- SHEET 2: GỢI Ý ĐỊA ĐIỂM ----------
+    const hangDiaDiem = [['Tên địa điểm', 'Nhóm ngân sách', 'Chi phí ước tính', 'Đặc sản', 'Mẹo bản địa']].concat(
+      du.diemDenBaoCao.map(function (d) { return [d.ten, nhomNganSach[d.nhom].nhan, khoangChiPhi(d), d.dacSan.join(', '), d.meoAn]; })
     );
-    XLSX.utils.book_append_sheet(wb, wsDiaDiem, 'Goi y dia diem');
+    const ws2 = XLSX.utils.aoa_to_sheet(hangDiaDiem);
+    ws2['!cols'] = tinhDoRongCot(hangDiaDiem, 45);
+    ws2['!rows'] = [{ hpx: 24 }].concat(du.diemDenBaoCao.map(function (d) {
+      return { hpx: Math.max(uocLuongChieuCaoHang(d.dacSan.join(', '), 45, 34), uocLuongChieuCaoHang(d.meoAn, 45, 34)) };
+    }));
+    ['A1', 'B1', 'C1', 'D1', 'E1'].forEach(function (dc) { ganKieu(ws2, dc, kieuOBang('0284C7', true, 'FFFFFF', true)); });
+    for (let r = 2; r <= hangDiaDiem.length; r++) {
+      const nen = r % 2 === 0 ? 'FFFFFF' : 'F7F4EC';
+      ['A', 'B', 'C', 'D', 'E'].forEach(function (cot) { ganKieu(ws2, cot + r, kieuOBang(nen, false, '16233A')); });
+    }
+    XLSX.utils.book_append_sheet(wb, ws2, 'Goi y dia diem');
 
-    XLSX.writeFile(wb, 'bao-cao-chuyen-di.xlsx');
+    XLSX.writeFile(wb, 'ke-hoach-tai-chinh-du-lich.xlsx');
   });
 
   /* =========================================================
@@ -1556,7 +1797,7 @@
     } else {
       rong.style.display = 'none';
       tbody.innerHTML = state.nhatKy.map(function (kc) {
-        return '<tr><td>Ngày ' + kc.ngay + '</td><td>' + kc.moTa + '</td><td class="so">' + formatTien(kc.soTien) + '</td>' +
+        return '<tr><td>Ngày ' + kc.ngay + '</td><td>' + (kc.hangMuc || 'Vui chơi / Mua sắm') + '</td><td>' + kc.moTa + '</td><td class="so">' + formatTien(kc.soTien) + '</td>' +
           '<td><button class="nut-xoa-khoan-chi" data-id="' + kc.id + '" type="button" aria-label="Xóa khoản chi">×</button></td></tr>';
       }).join('');
       tbody.querySelectorAll('.nut-xoa-khoan-chi').forEach(function (btn) {
@@ -1626,7 +1867,8 @@
     if (!moTa || soTien <= 0) return;
     const tt = tinhNgayThuMay();
     const ngayGan = tt.trangThai === 'dang_di' ? tt.ngayThuMay : (tt.trangThai === 'ket_thuc' ? tt.soNgay : 1);
-    state.nhatKy.push({ id: state.dauChiTieuKeTiep++, moTa: moTa, soTien: soTien, ngay: ngayGan });
+    const hangMuc = document.getElementById('hangMucChiTieu').value;
+    state.nhatKy.push({ id: state.dauChiTieuKeTiep++, moTa: moTa, soTien: soTien, ngay: ngayGan, hangMuc: hangMuc });
     moTaEl.value = '';
     soTienEl.value = '';
     renderNhatKy();
